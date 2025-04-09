@@ -62,9 +62,7 @@ export default function Header() {
 
         <div className="flex items-center space-x-4">
           <ThemeToggle />
-          <button className="hidden md:block px-5 py-2 rounded-full border border-green-500/30 hover:border-green-500 transition-colors duration-300">
-            Sign In
-          </button>
+            
           <button className="px-5 py-2 rounded-full bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-400 hover:to-blue-400 transition-colors duration-300">
             Get Started
           </button>

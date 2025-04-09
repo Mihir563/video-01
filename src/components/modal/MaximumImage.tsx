@@ -9,7 +9,6 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import type { UserImage } from "@/types/index";
-import Image from "next/image";
 
 interface MaxImagesModalProps {
   isOpen: boolean;
@@ -70,8 +69,8 @@ const MaxImagesModal: React.FC<MaxImagesModalProps> = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-lg bg-gradient-to-br from-indigo-900 to-black border border-indigo-500 shadow-2xl shadow-indigo-500/50 rounded-2xl p-4">
-        <DialogHeader className="text-center mb-2">
+      <DialogContent className="sm:max-w-x bg-gradient-to-br from-indigo-900 to-black border border-indigo-500 shadow-2xl shadow-indigo-500/50 rounded-2xl p-4">
+        <DialogHeader className="text-center">
           <DialogTitle className="text-xl font-bold text-white flex items-center justify-center gap-2">
             <AlertTriangle className="w-5 h-5 text-amber-400" />
             Maximum Images Reached
@@ -83,7 +82,7 @@ const MaxImagesModal: React.FC<MaxImagesModalProps> = ({
         </DialogHeader>
 
         {/* Instructions */}
-        <div className="bg-indigo-950 border border-indigo-400 rounded-lg p-2 mb-2 text-xs">
+        <div className="bg-indigo-950 border border-indigo-400 rounded-lg p-2 text-xs">
           <p className="text-indigo-200">
             {selectedForReplacement
               ? "Click 'Replace Selected' to confirm replacement"
@@ -96,7 +95,7 @@ const MaxImagesModal: React.FC<MaxImagesModalProps> = ({
           <h3 className="text-white text-sm font-medium mb-2">
             Currently Selected Images:
           </h3>
-          <div className="grid grid-cols-3 gap-2 max-h-32 overflow-y-auto p-1">
+          <div className="grid grid-cols-3 gap-2 max-h-32 overflow-y-auto ">
             {selectedImages.map((imageId) => {
               const image = images.find((img) => img.id === imageId);
               return image ? (
@@ -131,8 +130,8 @@ const MaxImagesModal: React.FC<MaxImagesModalProps> = ({
                     <X size={14} />
                   </button>
                   {selectedForReplacement === image.id && (
-                    <div className="absolute inset-0 bg-red-500 bg-opacity-30 flex items-center justify-center">
-                      <span className="bg-red-600 text-white px-1 py-0.5 rounded text-xs font-bold">
+                    <div className="absolute inset-0 bg-red-500/350 bg-opacity-30 flex items-center justify-center">
+                      <span className="bg-red-600/90 text-white px-1 py-0.5 rounded text-xs font-bold">
                         Selected
                       </span>
                     </div>
@@ -146,7 +145,6 @@ const MaxImagesModal: React.FC<MaxImagesModalProps> = ({
         {/* Show pending image if there is one */}
         {pendingImage && (
           <div className="py-1">
-           
             <h3 className="text-white text-sm font-medium mb-1">
               Image You Want to Add:
             </h3>
@@ -158,9 +156,8 @@ const MaxImagesModal: React.FC<MaxImagesModalProps> = ({
                 <img
                   src={pendingImage.url}
                   alt={pendingImage.title}
-                  className="w-full h-34 object-fill"
+                  className="h-24 object-fill w-full"
                 />
-                
               </div>
             </div>
           </div>

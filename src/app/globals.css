@@ -1,6 +1,7 @@
 @import "tailwindcss";
 
 :root {
+  /* Default theme (dark) */
   --primary: 130, 100%, 50%;
   --primary-foreground: 0, 0%, 100%;
   --background: 246, 65%, 10%;
@@ -9,6 +10,7 @@
   --muted: 246, 30%, 20%;
 }
 
+/* Dark theme - keep same as root for consistency */
 .dark {
   --primary: 130, 100%, 50%;
   --primary-foreground: 0, 0%, 100%;
@@ -16,6 +18,16 @@
   --foreground: 0, 0%, 100%;
   --accent: 270, 100%, 65%;
   --muted: 246, 30%, 20%;
+}
+
+/* Light theme - proper light colors */
+.light {
+  --primary: 130, 80%, 40%;
+  --primary-foreground: 0, 0%, 100%;
+  --background: 230, 20%, 95%;
+  --foreground: 240, 10%, 20%;
+  --accent: 270, 70%, 60%;
+  --muted: 230, 15%, 80%;
 }
 
 body {
@@ -30,7 +42,7 @@ body {
 }
 
 .light body {
-  background: linear-gradient(to bottom right, hsl(246, 70%, 15%), hsl(246, 80%, 5%));
+  background: linear-gradient(to bottom right, hsl(230, 20%, 90%), hsl(230, 15%, 98%));
 }
 
 @keyframes glow {
@@ -93,6 +105,12 @@ body {
   border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
+/* Light mode modifications for grid items */
+.light .grid-item {
+  background: rgba(255, 255, 255, 0.5);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
 .grid-item:nth-child(1) {
   animation-delay: 0.1s;
 }
@@ -148,6 +166,11 @@ body {
   background: rgba(0, 0, 0, 0.7);
 }
 
+/* Light mode overlay */
+.light .modal-overlay {
+  background: rgba(0, 0, 0, 0.3);
+}
+
 .modal-overlay.open {
   opacity: 1;
 }
@@ -158,6 +181,12 @@ body {
   transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   background: linear-gradient(135deg, rgba(41, 31, 92, 0.8), rgba(10, 10, 30, 0.8));
   border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Light mode modal */
+.light .modal-content {
+  background: linear-gradient(135deg, rgba(230, 230, 250, 0.9), rgba(255, 255, 255, 0.95));
+  border: 1px solid rgba(0, 0, 0, 0.1);
 }
 
 .modal-content.open {
@@ -175,9 +204,22 @@ body {
   transition: all 0.3s ease;
 }
 
+/* Light mode futuristic border */
+.light .futuristic-border {
+  border: 1px solid rgba(0, 100, 0, 0.2);
+  background: linear-gradient(135deg, rgba(230, 230, 250, 0.4), rgba(255, 255, 255, 0.7));
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
 .futuristic-border:hover {
   border: 1px solid rgba(130, 255, 130, 0.3);
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3), 0 0 10px rgba(130, 255, 130, 0.2);
+}
+
+/* Light mode futuristic border hover */
+.light .futuristic-border:hover {
+  border: 1px solid rgba(0, 100, 0, 0.4);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15), 0 0 10px rgba(0, 150, 0, 0.15);
 }
 
 .futuristic-border::before {
@@ -211,12 +253,6 @@ body {
   position: relative;
   width: 24px;
   height: 24px;
-}
-
-.checkbox-container {
-  position: relative;
-  width: 24px;
-  height: 24px;
   cursor: pointer;
 }
 
@@ -243,28 +279,23 @@ body {
   overflow: hidden;
 }
 
-.checkbox-input:checked + .checkbox-custom {
+/* Light mode checkbox */
+.light .checkbox-custom {
+  background-color: rgba(255, 255, 255, 0.6);
+  border: 2px solid rgba(0, 100, 0, 0.6);
+}
+
+.checkbox-input:checked+.checkbox-custom {
   background-color: rgba(130, 255, 130, 0.2);
   border-color: rgba(130, 255, 130, 1);
   box-shadow: 0 0 10px rgba(130, 255, 130, 0.8);
 }
 
-.checkbox-custom::after {
-  content: "✔";
-  font-size: 16px;
-  color: rgba(130, 255, 130, 1);
-  font-weight: bold;
-  transform: scale(0);
-  transition: transform 0.2s ease-in-out;
-}
-
-.checkbox-input:checked + .checkbox-custom::after {
-  transform: scale(1) rotate(360deg);
-}
-
-
-.checkbox-input:checked+.checkbox-custom {
-  background-color: hsl(var(--primary));
+/* Light mode checked checkbox */
+.light .checkbox-input:checked+.checkbox-custom {
+  background-color: rgba(0, 150, 0, 0.8);
+  border-color: rgba(0, 100, 0, 1);
+  box-shadow: 0 0 10px rgba(0, 100, 0, 0.4);
 }
 
 .checkbox-custom::after {
@@ -294,13 +325,28 @@ body {
   border-radius: 4px;
 }
 
+/* Light mode scrollbar */
+.light ::-webkit-scrollbar-thumb {
+  background: linear-gradient(to bottom, #4f46e5, #818cf8);
+}
+
 ::-webkit-scrollbar-thumb:hover {
   background: linear-gradient(to bottom, #818cf8, #4f46e5);
+}
+
+/* Light mode scrollbar hover */
+.light ::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(to bottom, #6366f1, #3730a3);
 }
 
 ::-webkit-scrollbar-track {
   background: rgba(10, 10, 30, 0.3);
   border-radius: 4px;
+}
+
+/* Light mode scrollbar track */
+.light ::-webkit-scrollbar-track {
+  background: rgba(230, 230, 250, 0.5);
 }
 
 /* Additional modern elements */
@@ -312,14 +358,31 @@ body {
   transition: all 0.3s ease;
 }
 
+/* Light mode glass card */
+.light .glass-card {
+  background: rgba(255, 255, 255, 0.5);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
 .glass-card:hover {
   transform: translateY(-5px);
   box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3), 0 0 15px rgba(130, 255, 130, 0.2);
 }
 
+/* Light mode glass card hover */
+.light .glass-card:hover {
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1), 0 0 15px rgba(0, 150, 0, 0.1);
+}
+
 .neon-text {
   color: white;
   text-shadow: 0 0 5px rgba(130, 255, 130, 0.5), 0 0 10px rgba(130, 255, 130, 0.3);
+}
+
+/* Light mode neon text */
+.light .neon-text {
+  color: #005000;
+  text-shadow: 0 0 5px rgba(0, 100, 0, 0.3), 0 0 10px rgba(0, 100, 0, 0.2);
 }
 
 .gradient-text {
@@ -329,6 +392,11 @@ body {
   color: transparent;
 }
 
+/* Light mode gradient text - slightly different gradient */
+.light .gradient-text {
+  background: linear-gradient(to right, #4f46e5, #16a34a);
+}
+
 .hover-lift {
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
@@ -336,4 +404,9 @@ body {
 .hover-lift:hover {
   transform: translateY(-4px);
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+}
+
+/* Light mode hover lift */
+.light .hover-lift:hover {
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
 }

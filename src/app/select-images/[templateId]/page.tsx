@@ -6,7 +6,6 @@ import { templates } from "@/data/templates";
 import type { UserImage } from "@/types";
 import MaxImagesModal from "@/components/modal/MaximumImage";
 import Pagination from "@/components/Pagination";
-import FormModal from "@/components/modal/VideoGenerationModal";
 
 export default function SelectImagesPage({
   params: paramsPromise,
@@ -17,7 +16,7 @@ export default function SelectImagesPage({
   const [images, setImages] = useState<UserImage[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedImages, setSelectedImages] = useState<string[]>([]);
-
+  const [albumId, setAlbumId] = useState<string | null>("2800851DKU");
   const [isMaxImagesModalOpen, setIsMaxImagesModalOpen] = useState(false);
   const [isFormModalOpen, setIsFormModalOpen] =useState(false)
   const [error, setError] = useState<string | null>(null);
@@ -28,6 +27,13 @@ export default function SelectImagesPage({
   const [paginatedImages, setPaginatedImages] = useState<UserImage[]>([]);
   const IMAGES_PER_PAGE = 10;
 
+
+  useEffect(() => {
+    if (params.templateId) {
+      setAlbumId(params.templateId);
+    }
+  }, [params.templateId]);
+  
   useEffect(() => {
     const startIndex = (currentPage - 1) * IMAGES_PER_PAGE;
     const endIndex = startIndex + IMAGES_PER_PAGE;
@@ -56,7 +62,7 @@ export default function SelectImagesPage({
       try {
         console.log("[ImageLoader] Fetching images from API");
         const response = await fetch(
-          "https://studio.codnix.com/creation/ealbum/2800851DKU.json"
+          `https://studio.codnix.com/creation/ealbum/${albumId}.json`
         );
         if (!response.ok) {
           console.error(
@@ -153,14 +159,14 @@ export default function SelectImagesPage({
           Select Your Media
         </h1>
         {template && (
-          <p className="text-lg text-gray-700 dark:text-gray-300 mb-2">
+          <p className="text-lg dark:text-gray-300 mb-2">
             Template:{" "}
-            <span className="text-gray-900 dark:text-white font-medium">
+            <span className="text-gray-300 dark:text-white font-medium">
               {template.title}
             </span>
           </p>
         )}
-        <p className="text-gray-600 dark:text-gray-400 mb-8">
+        <p className="text-gray-700 dark:text-gray-300 mb-8">
           Choose up to {MAX_SELECTED_IMAGES} images and an audio file to create
           your video
         </p>

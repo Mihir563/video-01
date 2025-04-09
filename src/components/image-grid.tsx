@@ -1,4 +1,4 @@
-import ImageGrid from "../../src/components/images/image-grid"
+import ImageGrid from "./images/image-grid"
 
 export default ImageGrid
 
