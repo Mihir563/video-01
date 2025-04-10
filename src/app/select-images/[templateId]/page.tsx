@@ -225,8 +225,7 @@ export default function SelectImagesPage({
       }
     `}
           disabled={selectedImages.length < 2}
-          onClick={() => 
-            setIsContactModalOpen(!isContactModalOpen)}
+          onClick={() => setIsContactModalOpen(!isContactModalOpen)}
         >
           {selectedImages.length < 2
             ? "Please select atleast tow images! 🍽️"
@@ -252,6 +251,7 @@ export default function SelectImagesPage({
         onClose={() => setIsContactModalOpen(false)}
         selectedImages={selectedImages}
         images={images}
+        template={template?.title}
       />
     </div>
   );

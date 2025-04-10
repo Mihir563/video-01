@@ -68,21 +68,21 @@ const MaxImagesModal: React.FC<MaxImagesModalProps> = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-x bg-gradient-to-br from-indigo-900 to-black border border-indigo-500 shadow-2xl shadow-indigo-500/50 rounded-2xl p-4">
+      <DialogContent className="sm:max-w-[500px] rounded-2xl border border-white/10 bg-white/80 dark:bg-zinc-900/70 backdrop-blur-md shadow-2xl transition-all duration-300 animate-in slide-in-from-bottom-6">
         <DialogHeader className="text-center">
           <DialogTitle className="text-xl font-bold text-white flex items-center justify-center gap-2">
             <AlertTriangle className="w-5 h-5 text-amber-400" />
             Maximum Images Reached
           </DialogTitle>
-          <DialogDescription className="text-indigo-300 text-sm">
+          <DialogDescription className="text-sm text-gray-200">
             You can select a maximum of {maxSelectedImages} images. Select which
             image to replace.
           </DialogDescription>
         </DialogHeader>
 
         {/* Instructions */}
-        <div className="bg-indigo-950 border border-indigo-400 rounded-lg p-2 text-xs">
-          <p className="text-indigo-200">
+        <div className="bg-gray-950 border border-gray-800 rounded-lg p-2 text-xs">
+          <p className="text-gray-200">
             {selectedForReplacement
               ? "Click 'Replace Selected' to confirm replacement"
               : "Click on an image you want to replace with the new one"}
@@ -115,11 +115,11 @@ const MaxImagesModal: React.FC<MaxImagesModalProps> = ({
                     #{image.id}
                   </div>
                   <Image
-                    width={100}
+                    width={70}
                     height={20}
                     src={image.url}
                     alt={image.title}
-                    className="w-full h-20 object-cover"
+                    className="w-full h-20 object-fill"
                   />
                   <button
                     onClick={(e) => {
@@ -159,7 +159,7 @@ const MaxImagesModal: React.FC<MaxImagesModalProps> = ({
                   height={24}
                   src={pendingImage.url}
                   alt={pendingImage.title}
-                  className="h-24 object-fill w-full"
+                  className="h-24 object"
                 />
               </div>
             </div>

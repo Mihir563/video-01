@@ -62,7 +62,7 @@ function Footer() {
         >
           <button
             onClick={scrollToTop}
-            className="bg-primary hover:bg-primary/90 text-white p-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 group"
+            className="bg-zinc-400 hover:bg-primary/90 p-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 group"
             aria-label="Scroll to top"
           >
             <ChevronUp className="h-5 w-5 group-hover:scale-110 transition-transform duration-300" />

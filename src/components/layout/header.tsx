@@ -24,12 +24,12 @@ export default function Header() {
   return (
     <header
       className={`
-        fixed top-0 left-0 right-0 z-50 -mt-2
+        fixed top-0 left-0 right-0 z-50
         transition-all duration-300 
         ${
           scrolled
             ? "bg-white/80 dark:bg-black/80 backdrop-blur-md py-3"
-            : "bg-black/70 py-5"
+            : " py-5"
         }
       `}
     >
@@ -74,7 +74,7 @@ export default function Header() {
         <div className="flex items-center space-x-4">
           <ThemeToggle />
 
-          <button className="px-5 py-2 rounded-full bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-400 hover:to-blue-400 transition-colors duration-300">
+          <button className="px-5 py-2 rounded-full bg-blue-500 hover:from-green-400 hover:bg-blue-400 transition-colors duration-300">
             Get Started
           </button>
         </div>
@@ -89,7 +89,7 @@ function NavLink({ href, active, children }: { href: string; active: boolean; ch
       href={href}
       className={`
         relative py-2 
-        ${active ? "text-gray-900 dark:text-white" : "text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"} 
+        ${active ? "text-gray-900 dark:text-white" : ""} 
         transition-colors duration-300
       `}
     >

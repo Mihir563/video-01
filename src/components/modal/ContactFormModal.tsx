@@ -47,6 +47,7 @@ interface ContactFormModalProps {
   onClose: () => void;
   selectedImages: string[];
   images: selectedImagesProps[];
+  template: string | undefined;
 }
 
 export default function ContactFormModal({
@@ -54,6 +55,7 @@ export default function ContactFormModal({
   onClose,
   selectedImages,
   images,
+  template
 }: ContactFormModalProps) {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [selectedImageObjects, setSelectedImageObjects] = useState<
@@ -70,10 +72,11 @@ export default function ContactFormModal({
     },
   });
 
+
   useEffect(() => {
     const selected = selectedImages
       .map((id) => images.find((img) => img.id === id))
-      .filter((img): img is selectedImagesProps => img !== undefined); // <- this tells TS that img is definitely of type `selectedImagesProps`
+      .filter((img): img is selectedImagesProps => img !== undefined);
 
     console.log({ selected: selected });
 
@@ -85,6 +88,15 @@ export default function ContactFormModal({
     console.log("Form submitted with data:", data);
     console.log("Selected images:", selectedImages);
 
+     const payload = {
+       images: selectedImageObjects,
+       template: template,
+       name: data.name,
+       whatsapp: data.whatsapp,
+       email: data.email,
+     };
+
+     console.log({ payload: payload });
     // Show success message
     setIsSubmitted(true);
 
@@ -98,17 +110,20 @@ export default function ContactFormModal({
     }, 10000);
   };
 
+
+ 
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[500px] rounded-2xl border border-white/10 bg-white/80 dark:bg-zinc-900/70 backdrop-blur-md shadow-2xl transition-all duration-300 animate-in slide-in-from-bottom-6">
         {!isSubmitted ? (
           <div className="p-8">
             <DialogHeader className="pb-6 text-center">
-              <DialogTitle className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-green-400 to-blue-500 text-transparent bg-clip-text">
+              <DialogTitle className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-zinc-300 to-zinc-400 text-transparent bg-clip-text">
                 Final Step: Get Your Video
               </DialogTitle>
               <DialogDescription className="text-gray-700 dark:text-gray-400 mt-2">
-                We need your contact details.
+                We will need your contact details to send you the video.
               </DialogDescription>
             </DialogHeader>
 
@@ -184,7 +199,7 @@ export default function ContactFormModal({
                 <div className="pt-4">
                   <Button
                     type="submit"
-                    className="w-full h-12 text-lg rounded-xl font-semibold text-white bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600 transition-all duration-300 focus:ring-2 focus:ring-blue-500"
+                    className="w-full h-12 text-lg rounded-xl font-semibold text-white bg-blue-500  hover:bg-blue-600 transition-all duration-300 focus:ring-2 focus:ring-blue-500"
                   >
                     Submit & Generate
                   </Button>
