@@ -1,7 +1,7 @@
 // components/modal/ContactFormModal.tsx
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -35,18 +35,31 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
+interface selectedImagesProps {
+  id: string;
+  index: number;
+  title: string;
+  url: string;
+}
+
 interface ContactFormModalProps {
   isOpen: boolean;
   onClose: () => void;
   selectedImages: string[];
+  images: selectedImagesProps[];
 }
 
 export default function ContactFormModal({
   isOpen,
   onClose,
   selectedImages,
+  images,
 }: ContactFormModalProps) {
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [selectedImageObjects, setSelectedImageObjects] = useState<
+    selectedImagesProps[] | null
+  >([]);
+  console.log(selectedImageObjects);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -56,6 +69,16 @@ export default function ContactFormModal({
       email: "",
     },
   });
+
+  useEffect(() => {
+    const selected = selectedImages
+      .map((id) => images.find((img) => img.id === id))
+      .filter((img): img is selectedImagesProps => img !== undefined); // <- this tells TS that img is definitely of type `selectedImagesProps`
+
+    console.log({ selected: selected });
+
+    setSelectedImageObjects(selected);
+  }, [selectedImages, images]);
 
   const onSubmit = (data: FormValues) => {
     // Here you would typically send the data to your backend
@@ -72,110 +95,111 @@ export default function ContactFormModal({
     setTimeout(() => {
       setIsSubmitted(false);
       onClose();
-    }, 3000);
+    }, 10000);
   };
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent
-        className="sm:max-w-[425px] p-0 overflow-hidden backdrop-blur-md bg-white/80 dark:bg-zinc-900/70
-"
-      >
+      <DialogContent className="sm:max-w-[500px] rounded-2xl border border-white/10 bg-white/80 dark:bg-zinc-900/70 backdrop-blur-md shadow-2xl transition-all duration-300 animate-in slide-in-from-bottom-6">
         {!isSubmitted ? (
-          <div className="p-6">
-            <DialogHeader className="pb-4">
-              <DialogTitle className="text-xl sm:text-2xl font-bold bg dark:text-blue-500">
-                Complete Your Video Request
+          <div className="p-8">
+            <DialogHeader className="pb-6 text-center">
+              <DialogTitle className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-green-400 to-blue-500 text-transparent bg-clip-text">
+                Final Step: Get Your Video
               </DialogTitle>
-              <DialogDescription className="text-gray-600 dark:text-gray-400 mt-1">
-                Please provide your contact details to receive your video.
+              <DialogDescription className="text-gray-700 dark:text-gray-400 mt-2">
+                We need your contact details.
               </DialogDescription>
             </DialogHeader>
 
             <Form {...form}>
               <form
                 onSubmit={form.handleSubmit(onSubmit)}
-                className="space-y-4 py-2 "
+                className="space-y-6 mt-6"
               >
+                {/* Name */}
                 <FormField
                   control={form.control}
                   name="name"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-gray-700 dark:text-gray-300 font-medium">
+                      <FormLabel className="text-sm font-semibold text-gray-700 dark:text-gray-300">
                         Full Name
                       </FormLabel>
                       <FormControl>
                         <Input
-                          placeholder="Enter your name"
-                          className=" dark:bg-gray-800 dark:text-white border-gray-300 dark:border-gray-700"
+                          placeholder="Elon Musk"
+                          className="dark:bg-gray-800 dark:text-white border-gray-300 dark:border-gray-700 focus:ring-2 focus:ring-blue-500 focus:outline-none rounded-md"
                           {...field}
                         />
                       </FormControl>
-                      <FormMessage className="text-sm" />
+                      <FormMessage />
                     </FormItem>
                   )}
                 />
 
+                {/* WhatsApp */}
                 <FormField
                   control={form.control}
                   name="whatsapp"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-gray-700 dark:text-gray-300 font-medium">
+                      <FormLabel className="text-sm font-semibold text-gray-700 dark:text-gray-300">
                         WhatsApp Number
                       </FormLabel>
                       <FormControl>
                         <Input
-                          placeholder="Enter your WhatsApp number"
-                          className=" dark:bg-gray-800 dark:text-white border-gray-300 dark:border-gray-700"
+                          placeholder="+91 98765 43210"
+                          className="dark:bg-gray-800 dark:text-white border-gray-300 dark:border-gray-700 focus:ring-2 focus:ring-green-500 focus:outline-none rounded-md"
                           {...field}
                         />
                       </FormControl>
-                      <FormMessage className="text-sm" />
+                      <FormMessage />
                     </FormItem>
                   )}
                 />
 
+                {/* Email */}
                 <FormField
                   control={form.control}
                   name="email"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-gray-700 dark:text-gray-300 font-medium">
+                      <FormLabel className="text-sm font-semibold text-gray-700 dark:text-gray-300">
                         Email Address
                       </FormLabel>
                       <FormControl>
                         <Input
-                          placeholder="Enter your email address"
-                          className=" dark:bg-gray-800 dark:text-white border-gray-300 dark:border-gray-700"
+                          placeholder="you@example.com"
+                          className="dark:bg-gray-800 dark:text-white border-gray-300 dark:border-gray-700 focus:ring-2 focus:ring-blue-500 focus:outline-none rounded-md"
                           {...field}
                         />
                       </FormControl>
-                      <FormMessage className="text-sm" />
+                      <FormMessage />
                     </FormItem>
                   )}
                 />
 
+                {/* Submit Button */}
                 <div className="pt-4">
                   <Button
                     type="submit"
-                    className="w-full h-12 rounded-md font-medium text-white transition-all duration-300 bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                    className="w-full h-12 text-lg rounded-xl font-semibold text-white bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600 transition-all duration-300 focus:ring-2 focus:ring-blue-500"
                   >
-                    Submit Request
+                    Submit & Generate
                   </Button>
                 </div>
               </form>
             </Form>
           </div>
         ) : (
-          <div className="flex flex-col items-center justify-center p-8 py-12">
-            <CheckCircle className="h-14 w-14 text-green-500 mb-4" />
-            <h3 className="text-xl sm:text-2xl font-semibold text-center text-gray-900 dark:text-gray-50">
-              Request Submitted!
+          <div className="flex flex-col items-center justify-center text-center p-10 animate-in fade-in zoom-in-95">
+            <CheckCircle className="h-16 w-16 text-green-500 mb-4 animate-pulse" />
+            <h3 className="text-2xl font-bold text-gray-900 dark:text-white">
+              Request Received!
             </h3>
-            <p className="text-center mt-2 text-gray-600 dark:text-gray-400">
-              You will receive your video shortly on your WhatsApp and email.
+            <p className="text-gray-600 dark:text-gray-400 mt-2 max-w-sm">
+              You’ll get your video via WhatsApp or email shortly.
             </p>
           </div>
         )}

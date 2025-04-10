@@ -92,11 +92,6 @@ body {
   animation: scaleIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-.glow-effect:hover {
-  animation: glow 2.5s infinite;
-  transform: translateY(-2px);
-  transition: transform 0.3s ease;
-}
 
 .grid-item {
   opacity: 0;

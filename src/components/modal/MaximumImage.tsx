@@ -37,6 +37,7 @@ const MaxImagesModal: React.FC<MaxImagesModalProps> = ({
     string | null
   >(null);
 
+  console.log(images)
   // Reset selection state when modal closes
   React.useEffect(() => {
     if (!isOpen) {
@@ -64,7 +65,6 @@ const MaxImagesModal: React.FC<MaxImagesModalProps> = ({
     }
   };
 
-  if (!images.length) return <p>Loading images...</p>;
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>

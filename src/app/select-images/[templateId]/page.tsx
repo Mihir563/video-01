@@ -50,7 +50,7 @@ export default function SelectImagesPage({
   };
 
   const template = templates.find((t) => t.id === params.templateId);
-  const MAX_SELECTED_IMAGES = 20;
+  const MAX_SELECTED_IMAGES = 10;
 
   // Fetch images from API
   useEffect(() => {
@@ -153,6 +153,9 @@ export default function SelectImagesPage({
   // Add padding to the bottom of the page to prevent content from being hidden by the fixed carousel
   const carouselHeight = selectedImages.length > 0 ? "" : "";
 
+  console.log(isContactModalOpen)
+  
+
   return (
     <div className={`container mx-auto px-4 py-12 pt-32 ${carouselHeight}`}>
       <section className="mb-12 animate-fade-in">
@@ -218,11 +221,12 @@ export default function SelectImagesPage({
       ${
         selectedImages.length < 2
           ? "bg-gray-400 cursor-not-allowed animate-wiggle text-gray-200 border-2 border-dashed border-red-400 shadow-[0_0_20px_rgba(255,0,0,0.4)]"
-          : "text-white bg-gradient-to-r from-green-500 to-blue-500 hover:scale-105 glow-effect hover:animate-bounce"
+          : "text-white bg-blue-500 hover:scale-105 "
       }
     `}
-          disabled={selectedImages.length <= 2}
-          onClick={() => setIsContactModalOpen(true)}
+          disabled={selectedImages.length < 2}
+          onClick={() => 
+            setIsContactModalOpen(!isContactModalOpen)}
         >
           {selectedImages.length < 2
             ? "Please select atleast tow images! 🍽️"
@@ -247,6 +251,7 @@ export default function SelectImagesPage({
         isOpen={isContactModalOpen}
         onClose={() => setIsContactModalOpen(false)}
         selectedImages={selectedImages}
+        images={images}
       />
     </div>
   );
