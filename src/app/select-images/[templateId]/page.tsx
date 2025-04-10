@@ -6,6 +6,7 @@ import { templates } from "@/data/templates";
 import type { UserImage } from "@/types";
 import MaxImagesModal from "@/components/modal/MaximumImage";
 import Pagination from "@/components/Pagination";
+import ContactFormModal from "@/components/modal/ContactFormModal";
 
 export default function SelectImagesPage({
   params: paramsPromise,
@@ -18,29 +19,27 @@ export default function SelectImagesPage({
   const [selectedImages, setSelectedImages] = useState<string[]>([]);
   const [albumId, setAlbumId] = useState<string | null>("2800851DKU");
   const [isMaxImagesModalOpen, setIsMaxImagesModalOpen] = useState(false);
-  const [isFormModalOpen, setIsFormModalOpen] =useState(false)
-  const [error, setError] = useState<string | null>(null);
   const [pendingImageToAdd, setPendingImageToAdd] = useState<string | null>(
     null
   );
   const [currentPage, setCurrentPage] = useState(1);
   const [paginatedImages, setPaginatedImages] = useState<UserImage[]>([]);
-  const IMAGES_PER_PAGE = 10;
-
+  const [isContactModalOpen, setIsContactModalOpen] = useState(false);
+  const IMAGES_PER_PAGE = 20;
 
   useEffect(() => {
     if (params.templateId) {
       setAlbumId(params.templateId);
     }
   }, [params.templateId]);
-  
+
   useEffect(() => {
     const startIndex = (currentPage - 1) * IMAGES_PER_PAGE;
     const endIndex = startIndex + IMAGES_PER_PAGE;
     setPaginatedImages(images.slice(startIndex, endIndex));
   }, [images, currentPage]);
 
-  // Add this function to handle page changes
+  // Handle page changes
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
     // Scroll to the top of the image grid
@@ -51,10 +50,8 @@ export default function SelectImagesPage({
   };
 
   const template = templates.find((t) => t.id === params.templateId);
-  const MAX_SELECTED_IMAGES = 10;
+  const MAX_SELECTED_IMAGES = 20;
 
-  
-  
   // Fetch images from API
   useEffect(() => {
     const fetchImages = async () => {
@@ -88,15 +85,15 @@ export default function SelectImagesPage({
         setImages(apiImages);
       } catch (error) {
         console.error("[ImageLoader] Error fetching images:", error);
-        setError("Failed to load images. Please try again later.");
       } finally {
         setLoading(false);
       }
     };
 
     fetchImages();
-  }, []);
-  // Add this function to handle image replacement
+  }, [albumId]);
+
+  // Handle image replacement
   const handleReplaceImage = (oldImageId: string, newImageId: string) => {
     setSelectedImages((prev) => {
       // Create a new array with the old image ID replaced by the new one
@@ -105,7 +102,7 @@ export default function SelectImagesPage({
       if (index !== -1) {
         newSelection[index] = newImageId;
       }
-      console.log(newSelection)
+      console.log(newSelection);
       return newSelection;
     });
 
@@ -115,7 +112,7 @@ export default function SelectImagesPage({
     setIsMaxImagesModalOpen(false);
   };
 
-  // Keep your existing handleImageSelect function but update the else condition:
+  // Handle image selection
   const handleImageSelect = (imageId: string) => {
     setSelectedImages((prev) => {
       if (prev.includes(imageId)) {
@@ -135,12 +132,13 @@ export default function SelectImagesPage({
     });
   };
 
+  // Close max images modal
   const closeMaxImagesModal = () => {
     setIsMaxImagesModalOpen(false);
     setPendingImageToAdd(null); // Clear the pending image
   };
 
-  // Function to remove image from selection in the max images modal
+  // Remove image from selection
   const removeImageFromSelection = (imageId: string) => {
     setSelectedImages((prev) => prev.filter((id) => id !== imageId));
 
@@ -152,21 +150,21 @@ export default function SelectImagesPage({
     }
   };
 
+  // Add padding to the bottom of the page to prevent content from being hidden by the fixed carousel
+  const carouselHeight = selectedImages.length > 0 ? "" : "";
+
   return (
-    <div className="container mx-auto px-4 py-12 pt-32 ">
+    <div className={`container mx-auto px-4 py-12 pt-32 ${carouselHeight}`}>
       <section className="mb-12 animate-fade-in">
         <h1 className="text-3xl md:text-4xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-green-400 to-blue-500">
           Select Your Media
         </h1>
         {template && (
-          <p className="text-lg dark:text-gray-300 mb-2">
-            Template:{" "}
-            <span className="text-gray-300 dark:text-white font-medium">
-              {template.title}
-            </span>
+          <p className="text-lg mb-2">
+            Template: <span className="font-medium">{template.title}</span>
           </p>
         )}
-        <p className="text-gray-700 dark:text-gray-300 mb-8">
+        <p className="mb-8">
           Choose up to {MAX_SELECTED_IMAGES} images and an audio file to create
           your video
         </p>
@@ -186,15 +184,24 @@ export default function SelectImagesPage({
           </button>
         )}
       </div>
-
-      {/* Modified ImageGrid component to show index */}
-      <ImageGrid
-        images={paginatedImages}
-        loading={loading}
-        selectedImages={selectedImages}
-        onSelectImage={handleImageSelect}
-        showIndexNumbers={true} // Add this prop to ImageGrid component
-      />
+      <div className="mb-4">
+        <Pagination
+          currentPage={currentPage}
+          totalItems={images.length}
+          itemsPerPage={IMAGES_PER_PAGE}
+          onPageChange={handlePageChange}
+        />
+      </div>
+      {/* Image Grid */}
+      <div id="image-grid">
+        <ImageGrid
+          images={paginatedImages}
+          loading={loading}
+          selectedImages={selectedImages}
+          onSelectImage={handleImageSelect}
+          showIndexNumbers={true}
+        />
+      </div>
 
       <Pagination
         currentPage={currentPage}
@@ -207,9 +214,19 @@ export default function SelectImagesPage({
       <div className="mt-12 flex justify-center gap-4">
         <button
           className={`
-            px-8 py-4 rounded-lg text-lg font-medium text-white transition-all duration-300 transform bg-gradient-to-r from-green-500 to-blue-500 hover:scale-105 glow-effect`}
+      px-8 py-4 rounded-lg text-lg font-medium transition-all duration-300 transform
+      ${
+        selectedImages.length < 2
+          ? "bg-gray-400 cursor-not-allowed animate-wiggle text-gray-200 border-2 border-dashed border-red-400 shadow-[0_0_20px_rgba(255,0,0,0.4)]"
+          : "text-white bg-gradient-to-r from-green-500 to-blue-500 hover:scale-105 glow-effect hover:animate-bounce"
+      }
+    `}
+          disabled={selectedImages.length <= 2}
+          onClick={() => setIsContactModalOpen(true)}
         >
-          Generate Video
+          {selectedImages.length < 2
+            ? "Please select atleast tow images! 🍽️"
+            : "Generate Video"}
         </button>
       </div>
 
@@ -223,6 +240,13 @@ export default function SelectImagesPage({
         images={images}
         onRemoveImage={removeImageFromSelection}
         onReplaceImage={handleReplaceImage}
+      />
+
+      {/* contact form modal */}
+      <ContactFormModal
+        isOpen={isContactModalOpen}
+        onClose={() => setIsContactModalOpen(false)}
+        selectedImages={selectedImages}
       />
     </div>
   );

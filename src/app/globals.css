@@ -3,7 +3,7 @@
 :root {
   /* Default theme (dark) */
   --primary: 130, 100%, 50%;
-  --primary-foreground: 0, 0%, 100%;
+  --primary-foreground: 0, 0%, 100%;  
   --background: 246, 65%, 10%;
   --foreground: 0, 0%, 100%;
   --accent: 270, 100%, 65%;
@@ -28,6 +28,7 @@
   --foreground: 240, 10%, 20%;
   --accent: 270, 70%, 60%;
   --muted: 230, 15%, 80%;
+  --ring: 130, 100%, 50%;
 }
 
 body {
@@ -42,7 +43,7 @@ body {
 }
 
 .light body {
-  background: linear-gradient(to bottom right, hsl(230, 20%, 90%), hsl(230, 15%, 98%));
+  background: linear-gradient(to bottom right, hsl(0, 0%, 100%), hsl(230, 15%, 98%));
 }
 
 @keyframes glow {
@@ -270,14 +271,17 @@ body {
   position: absolute;
   top: 0;
   left: 0;
-  width: 24px;
-  height: 24px;
-  background-color: rgba(255, 255, 255, 0.1);
-  border: 2px solid rgba(130, 255, 130, 0.6);
-  border-radius: 4px;
-  transition: all 0.3s ease;
+  width: 28px;
+  height: 28px;
+  background: rgba(0, 0, 0, 0.6);
+  border: 2px solid rgba(0, 255, 100, 0.8);
+  border-radius: 6px;
+  box-shadow: 0 0 6px rgba(0, 255, 100, 0.3);
+  transition: all 0.25s ease-in-out;
+  cursor: pointer;
   overflow: hidden;
 }
+
 
 /* Light mode checkbox */
 .light .checkbox-custom {

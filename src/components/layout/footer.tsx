@@ -195,7 +195,7 @@ function Footer() {
           </motion.div>
         </motion.div>
         <motion.div
-          className="flex justify-center items-center gap-8 py-8 border-y border-border mb-8"
+          className="flex justify-center items-center gap-8 py-8 border-t border-border"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -247,14 +247,14 @@ function Footer() {
             <div className="bg-primary/10 px-6 py-3 rounded-full mb-6 transform hover:scale-105 transition-all duration-300">
               <p className="text-base md:text-lg font-medium">
                 Powered by{" "}
-                <a
+                <Link
                   href="https://codnix.com"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-primary hover:underline font-bold"
                 >
                   CODNIX
-                </a>
+                </Link>
               </p>
             </div>
           </div>

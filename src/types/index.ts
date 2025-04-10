@@ -15,4 +15,5 @@ export interface UserImage {
   id: string
   url: string
   title: string
+  index:number
 }

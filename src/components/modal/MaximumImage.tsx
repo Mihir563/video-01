@@ -9,6 +9,7 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import type { UserImage } from "@/types/index";
+import Image from "next/image";
 
 interface MaxImagesModalProps {
   isOpen: boolean;
@@ -63,8 +64,6 @@ const MaxImagesModal: React.FC<MaxImagesModalProps> = ({
     }
   };
 
-  console.log(pendingImage)
-
   if (!images.length) return <p>Loading images...</p>;
 
   return (
@@ -115,7 +114,9 @@ const MaxImagesModal: React.FC<MaxImagesModalProps> = ({
                   <div className="absolute top-0 left-0 bg-blue-600 text-white text-xs font-semibold p-1 rounded-br-md z-10">
                     #{image.id}
                   </div>
-                  <img
+                  <Image
+                    width={100}
+                    height={20}
                     src={image.url}
                     alt={image.title}
                     className="w-full h-20 object-cover"
@@ -153,7 +154,9 @@ const MaxImagesModal: React.FC<MaxImagesModalProps> = ({
                 <div className="absolute top-0 left-0 bg-green-600 text-white text-xs font-semibold p-1 rounded-br-md z-10">
                   #{pendingImage.id}
                 </div>
-                <img
+                <Image
+                  width={100}
+                  height={24}
                   src={pendingImage.url}
                   alt={pendingImage.title}
                   className="h-24 object-fill w-full"

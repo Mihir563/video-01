@@ -1,7 +1,3 @@
-"use client"
-
-import { useState } from "react"
-import Image from "next/image"
 import { animations, Animation } from "@/data/animations"
 import { motion } from "framer-motion" // Assuming you have framer-motion installed
 
@@ -35,7 +31,6 @@ interface AnimationCardProps {
 }
 
 function AnimationCard({ animation, isSelected, onSelect }: AnimationCardProps) {
-  const [isHovering, setIsHovering] = useState(false)
 
   return (
     <motion.div
@@ -45,8 +40,6 @@ function AnimationCard({ animation, isSelected, onSelect }: AnimationCardProps) 
         ${isSelected ? 'border-blue-500 ring-2 ring-blue-300' : 'border-transparent hover:border-gray-300'}
       `}
       onClick={onSelect}
-      onMouseEnter={() => setIsHovering(true)}
-      onMouseLeave={() => setIsHovering(false)}
     >
       <div className="relative aspect-video bg-gray-100 dark:bg-gray-800">
         {/* You can replace with actual thumbnails */}

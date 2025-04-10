@@ -1,11 +1,11 @@
+// app/layout.tsx (or app/root-layout.tsx depending on your file structure)
 import type React from "react";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/layout/header";
 import Footer from "@/components/layout/footer";
-import { ThemeProvider } from "@/contexts/theme-context";
-
+import { ThemeProvider } from "@/components/theme/themeProvider";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -21,9 +21,9 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${inter.className} min-h-screen flex flex-col bg-gradient-to-br from-indigo-900 to-black`}
+        className={`${inter.className} min-h-screen bg-background text-foreground`}
       >
-        <ThemeProvider>
+        <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
           <Header />
           <main className="flex-grow">{children}</main>
           <Footer />

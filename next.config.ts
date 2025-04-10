@@ -24,9 +24,6 @@ const nextConfig: NextConfig = {
       {
         source: "/(.*)",
         headers: [
-          // Change this from "require-corp" to "credentialless" to avoid CORS issues
-          // while maintaining some security benefits
-
           // Add CORS headers
           { key: "Access-Control-Allow-Origin", value: "*" },
           { key: "Access-Control-Allow-Methods", value: "GET,OPTIONS,PATCH,DELETE,POST,PUT" },
@@ -34,32 +31,6 @@ const nextConfig: NextConfig = {
         ],
       },
     ];
-  },
-  webpack: (config) => {
-    config.resolve.alias = {
-      ...config.resolve.alias,
-      fs: false,
-      path: false,
-    };
-    // Enable WebAssembly support
-    config.experiments = {
-      ...config.experiments,
-      asyncWebAssembly: true,
-      layers: true, // Enable module layer rules
-    };
-    // Add specific handling for wasm files
-    config.module.rules.push({
-      test: /\.wasm$/,
-      type: "javascript/auto",
-      use: {
-        loader: "file-loader",
-        options: {
-          name: "static/wasm/[name].[hash].[ext]",
-          publicPath: "/_next/",
-        },
-      },
-    });
-    return config;
   },
 };
 

@@ -8,6 +8,7 @@ interface PaginationProps {
   onPageChange: (page: number) => void;
 }
 
+
 const Pagination: React.FC<PaginationProps> = ({
   currentPage,
   totalItems,
@@ -25,7 +26,7 @@ const Pagination: React.FC<PaginationProps> = ({
   };
 
   const renderPageNumbers = () => {
-    const pageNumbers = [];
+    const pageNumbers: React.ReactNode[] = [];
     const maxVisiblePages = 5;
 
     // For few pages, show all page numbers
@@ -37,8 +38,8 @@ const Pagination: React.FC<PaginationProps> = ({
             onClick={() => handlePageChange(i)}
             className={`w-8 h-8 flex items-center justify-center rounded-md ${
               currentPage === i
-                ? "bg-blue-600 text-white"
-                : "text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700"
+                ? "bg-blue-600"
+                : "hover:bg-gray-100 dark:hover:bg-gray-700"
             }`}
             aria-current={currentPage === i ? "page" : undefined}
           >
@@ -57,8 +58,8 @@ const Pagination: React.FC<PaginationProps> = ({
           onClick={() => handlePageChange(i)}
           className={`w-8 h-8 flex items-center justify-center rounded-md ${
             currentPage === i
-              ? "bg-blue-600 text-white"
-              : "text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700"
+              ? "bg-blue-600 "
+              : " hover:bg-gray-100  dark:hover:bg-gray-700"
           }`}
           aria-current={currentPage === i ? "page" : undefined}
         >
@@ -106,12 +107,12 @@ const Pagination: React.FC<PaginationProps> = ({
       pushPageNumber(totalPages);
     }
 
-    return pageNumbers;
+    return pageNumbers
   };
 
   return (
     <nav
-      className="flex items-center justify-center mt-8 gap-2"
+      className="flex items-center justify-end mt-8 gap-2"
       aria-label="Pagination"
     >
       <button

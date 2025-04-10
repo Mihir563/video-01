@@ -38,14 +38,25 @@ export default function Header() {
           href="/"
           className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-green-400 to-blue-500"
         >
-          <Image
-            height={100}
-            width={100}
-            alt="ealbum"
-            src={
-              "https://ealbum.in/wp-content/uploads/2019/07/ealbum-Logo-_-light.png"
-            }
-          />
+          {scrolled ? (
+            <Image
+              height={100}
+              width={100}
+              alt="ealbum"
+              src={
+                "https://ealbum.in/wp-content/uploads/2019/07/ealbum-Logo-_-light.png"
+              }
+            />
+          ) : (
+            <Image
+              height={100}
+              width={100}
+              alt="ealbum"
+              src={
+                "https://ealbum.in/wp-content/uploads/2019/07/ealbum-logo-dark.png"
+              }
+            />
+          )}
         </Link>
 
         <nav className="hidden md:flex space-x-8">
@@ -62,7 +73,7 @@ export default function Header() {
 
         <div className="flex items-center space-x-4">
           <ThemeToggle />
-            
+
           <button className="px-5 py-2 rounded-full bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-400 hover:to-blue-400 transition-colors duration-300">
             Get Started
           </button>
