@@ -88,15 +88,15 @@ export default function TemplateModal({ template, isOpen, onClose }: TemplateMod
           <div className="flex flex-wrap gap-4">
             <button
               onClick={handleSelectTemplate}
-              className="px-6 py-3 rounded-lg  bg-blue-500 font-medium  hover:bg-blue-400 transition-colors duration-300 flex-1 text-white"
+              className="px-6 py-1 rounded-lg  bg-blue-500 font-medium  hover:bg-blue-400 transition-colors duration-300 flex-1 text-white"
             >
-              Select Template
+              Select
             </button>
             <button
               onClick={handleClose}
-              className="px-6 py-3 rounded-lg bg-gray-200 dark:bg-gray-800 font-medium hover:bg-gray-300 dark:hover:bg-gray-700 transition-colors duration-300 flex-1 text-gray-900 dark:text-white"
+              className="px-6 py-1 rounded-lg bg-gray-200 dark:bg-gray-800 font-medium hover:bg-gray-300 dark:hover:bg-gray-700 transition-colors duration-300 flex-1 text-gray-900 dark:text-white"
             >
-              Browse More Templates
+              Browse More 
             </button>
           </div>
         </div>

@@ -28,8 +28,8 @@ export default function Header() {
         transition-all duration-300 
         ${
           scrolled
-            ? "bg-white/80 dark:bg-black/80 backdrop-blur-md py-3"
-            : " py-5"
+            ? "bg-background/80 backdrop-blur-md py-3"
+            : "bg-background/60 py-5"
         }
       `}
     >
@@ -85,12 +85,21 @@ function NavLink({ href, active, children }: { href: string; active: boolean; ch
       href={href}
       className={`
         relative py-2 
-        ${active ? "text-gray-900 dark:text-white" : ""} 
-        transition-colors duration-300
+        ${active ? "text-primary font-medium" : "text-foreground hover:text-primary/90"} 
+        transition-all duration-300 group
       `}
     >
       {children}
-      {active && <span className="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-green-500 to-blue-500" />}
+      <span 
+        className={`
+          absolute bottom-0 left-0 w-full h-0.5 
+          bg-gradient-to-r from-primary to-accent 
+          transition-all duration-300 
+          ${active ? "opacity-100" : "opacity-0 group-hover:opacity-70"} 
+          ${active ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"} 
+          origin-left
+        `} 
+      />
     </Link>
   )
 }

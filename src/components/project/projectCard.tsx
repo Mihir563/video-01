@@ -28,7 +28,7 @@ export default function ProjectCard({
               {/* Display the actual image or fallback to a gradient */}
               {project.images[0].url ? (
                 <div className="w-full h-full">
-                  <img
+                  <img 
                     src={project.images[0].url} 
                     alt={project.images[0].title || 'Project image'}
                     className="w-full h-full object-cover"

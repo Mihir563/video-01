@@ -19,7 +19,7 @@ export default function TemplateCard({ template }: TemplateCardProps) {
       <motion.div
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
-        className="group relative rounded-xl overflow-hidden futuristic-border cursor-pointer bg-gradient-to-br from-gray-900 to-black shadow-lg shadow-indigo-500/30 hover:shadow-indigo-500/50 transition-all duration-500"
+        className="group relative rounded-xl overflow-hidden futuristic-border cursor-pointer bg-gradient-to-br from-card to-background shadow-lg shadow-primary/20 hover:shadow-primary/40 transition-all duration-500"
         onClick={() => setIsModalOpen(true)}
       >
         <div className="aspect-video relative overflow-hidden">
@@ -35,7 +35,7 @@ export default function TemplateCard({ template }: TemplateCardProps) {
               className="object-cover transition-transform duration-700 group-hover:scale-110"
             />
           </motion.div>
-          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-70 group-hover:opacity-90 transition-opacity duration-300" />
+          <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/30 to-transparent opacity-70 group-hover:opacity-90 transition-opacity duration-300" />
         </div>
 
         <motion.div
@@ -44,11 +44,11 @@ export default function TemplateCard({ template }: TemplateCardProps) {
           transition={{ duration: 0.5, delay: 0.2 }}
           className="absolute bottom-0 left-0 right-0 p-4"
         >
-          <h3 className="text-lg font-bold text-white flex items-center gap-2">
-            <SparklesIcon className="w-5 h-5 text-indigo-400 animate-pulse" />
+          <h3 className="text-lg font-bold text-foreground flex items-center gap-2">
+            <SparklesIcon className="w-5 h-5 text-primary animate-pulse" />
             {template.title}
           </h3>
-          <p className="text-sm text-gray-300 line-clamp-1">{template.description}</p>
+          <p className="text-sm text-muted-foreground line-clamp-1">{template.description}</p>
         </motion.div>
 
         <motion.div
@@ -57,7 +57,7 @@ export default function TemplateCard({ template }: TemplateCardProps) {
           whileHover={{ scale: 1.1 }}
           className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300"
         >
-          <span className="px-4 py-2 bg-indigo-600/90 rounded-full text-sm font-medium text-white shadow-md shadow-indigo-500/50">
+          <span className="px-4 py-2 bg-primary/90 rounded-full text-sm font-medium text-primary-foreground shadow-md shadow-primary/50">
             Preview Template
           </span>
         </motion.div>

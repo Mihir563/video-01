@@ -24,7 +24,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { CheckCircle, Mail, User, X } from "lucide-react";
 import { DialogClose } from "@radix-ui/react-dialog";
-import { ProjectImage } from "@/types/projects";
+import { Project } from "@/types/projects";
 
 // Form validation schema
 const formSchema = z.object({
@@ -132,7 +132,7 @@ export default function ContactFormModal({
       // Change to processing after 3 seconds
       setTimeout(() => {
         const projects = JSON.parse(localStorage.getItem('userProjects') || '[]');
-        const projectIndex = projects.findIndex((p: ProjectImage) => p.id === projectData.id);
+        const projectIndex = projects.findIndex((p: Project) => p.id === projectData.id);
         
         if (projectIndex !== -1) {
           projects[projectIndex].status = 'processing';
@@ -142,7 +142,7 @@ export default function ContactFormModal({
           // Change to completed after another 5 seconds
           setTimeout(() => {
             const updatedProjects = JSON.parse(localStorage.getItem('userProjects') || '[]');
-            const updatedIndex = updatedProjects.findIndex((p: ProjectImage) => p.id === projectData.id);
+            const updatedIndex = updatedProjects.findIndex((p: Project) => p.id === projectData.id);
             
             if (updatedIndex !== -1) {
               updatedProjects[updatedIndex].status = 'completed';
@@ -175,7 +175,7 @@ export default function ContactFormModal({
 
   return (
     <Dialog open={isOpen} >
-      <DialogContent className="sm:max-w-[500px] rounded-2xl border border-white/10 bg-white/80 dark:bg-zinc-900/70 backdrop-blur-md shadow-2xl transition-all duration-300 animate-in slide-in-from-bottom-6">
+      <DialogContent className="sm:max-w-[500px] rounded-2xl border border-white/10 dark:bg-zinc-900/70 backdrop-blur-md shadow-2xl transition-all duration-300 animate-in slide-in-from-bottom-6">
         {!isSubmitted ? (
           <div className="p-8">
             <DialogClose asChild>

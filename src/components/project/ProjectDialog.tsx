@@ -1,6 +1,5 @@
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import {ProjectImage } from "@/types/projects";
 import { Project } from "@/types/projects";
 
 interface ProjectDialogProps {
@@ -68,7 +67,7 @@ export default function ProjectDialog({ project, onClose }: ProjectDialogProps) 
           <div>
             <h4 className="text-sm font-medium text-muted-foreground mb-3">Selected Images</h4>
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-              {project.images.map((image: ProjectImage) => (
+              {project.images.map((image) => (
                 <div key={image.id} className="relative aspect-video rounded-md overflow-hidden border border-border">
                   {/* Display the actual image or fallback to a gradient */}
                   {image.url ? (
