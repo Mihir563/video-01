@@ -59,11 +59,11 @@ export default function Header() {
           )}
         </Link>
 
-        <nav className="hidden md:flex space-x-8">
+        <nav className="hidden md:flex space-x-8 ">
           <NavLink href="/" active={pathname === "/"}>
             Templates
           </NavLink>
-          <NavLink href="#" active={false}>
+          <NavLink href="/projects" active={pathname === "/projects"}>
             My Projects
           </NavLink>
           <NavLink href="#" active={false}>
@@ -73,10 +73,6 @@ export default function Header() {
 
         <div className="flex items-center space-x-4">
           <ThemeToggle />
-
-          <button className="px-5 py-2 rounded-full bg-blue-500 hover:from-green-400 hover:bg-blue-400 transition-colors duration-300">
-            Get Started
-          </button>
         </div>
       </div>
     </header>

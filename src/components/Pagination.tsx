@@ -39,7 +39,7 @@ const Pagination: React.FC<PaginationProps> = ({
             className={`w-8 h-8 flex items-center justify-center rounded-md ${
               currentPage === i
                 ? "bg-blue-600"
-                : "hover:bg-gray-100 dark:hover:bg-gray-700"
+                : "hover:bg-gray-100 dark:hover:bg-blue-400"
             }`}
             aria-current={currentPage === i ? "page" : undefined}
           >

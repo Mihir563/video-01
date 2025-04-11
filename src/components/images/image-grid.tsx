@@ -30,7 +30,7 @@ export default function ImageGrid({ images, loading, selectedImages, onSelectIma
   }
 
   return (
-    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 sm:gap-10">
+    <div className="grid grid-cols-2 gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 sm:gap-10">
       {images.map((image) => (
         <div key={image.id} className="grid-item">
           <div

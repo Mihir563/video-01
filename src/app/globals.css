@@ -7,7 +7,19 @@
   --background: 246, 65%, 10%;
   --foreground: 0, 0%, 100%;
   --accent: 270, 100%, 65%;
+  --accent-foreground: 0, 0%, 100%;
   --muted: 246, 30%, 20%;
+  --card: 246, 60%, 15%;
+  --card-foreground: 0, 0%, 100%;
+  --popover: 246, 60%, 15%;
+  --popover-foreground: 0, 0%, 100%;
+  --secondary: 246, 40%, 40%;
+  --secondary-foreground: 0, 0%, 100%;
+  --destructive: 0, 100%, 50%;
+  --destructive-foreground: 0, 0%, 100%;
+  --border: 246, 30%, 20%;
+  --input: 246, 30%, 20%;
+  --ring: 130, 100%, 50%;
 }
 
 /* Dark theme - keep same as root for consistency */
@@ -17,7 +29,21 @@
   --background: 246, 65%, 10%;
   --foreground: 0, 0%, 100%;
   --accent: 270, 100%, 65%;
+  --accent-foreground: 0, 0%, 100%;
   --muted: 246, 30%, 20%;
+  --card: 246, 60%, 15%;
+  --card-foreground: 0, 0%, 100%;
+  --popover: 246, 60%, 15%;
+  --popover-foreground: 0, 0%, 100%;
+  --secondary: 246, 40%, 40%;
+  --secondary-foreground: 0, 0%, 100%;
+  --destructive: 0, 100%, 50%;
+  --destructive-foreground: 0, 0%, 100%;
+  --border: 246, 30%, 20%;
+  --input: 246, 30%, 20%;
+  --ring: 130, 100%, 50%;
+  --muted-foreground: 220, 10%, 70%;
+--radius: 0.5rem;
 }
 
 /* Light theme - proper light colors */
@@ -27,8 +53,21 @@
   --background: 230, 20%, 95%;
   --foreground: 240, 10%, 20%;
   --accent: 270, 70%, 60%;
+  --accent-foreground: 0, 0%, 100%;
   --muted: 230, 15%, 80%;
+  --card: 230, 15%, 90%;
+  --card-foreground: 240, 10%, 20%;
+  --popover: 230, 15%, 90%;
+  --popover-foreground: 240, 10%, 20%;
+  --secondary: 246, 40%, 60%;
+  --secondary-foreground: 0, 0%, 100%;
+  --destructive: 0, 90%, 60%;
+  --destructive-foreground: 0, 0%, 100%;
+  --border: 230, 15%, 70%;
+  --input: 230, 15%, 70%;
   --ring: 130, 100%, 50%;
+  --muted-foreground: 240, 10%, 45%;
+--radius: 0.5rem;
 }
 
 body {
@@ -408,4 +447,8 @@ body {
 /* Light mode hover lift */
 .light .hover-lift:hover {
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+::-webkit-scrollbar-track:hover {
+  background: rgba(130, 255, 130, 0.1);
 }

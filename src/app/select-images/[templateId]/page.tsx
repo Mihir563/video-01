@@ -174,14 +174,14 @@ export default function SelectImagesPage({
       </section>
 
       {/* Image selection counter */}
-      <div className="mb-6 flex justify-between items-center">
-        <p className="text-sm font-medium">
-          Selected Images: {selectedImages.length}/{MAX_SELECTED_IMAGES}
+      <div className="mb-6 flex flex-col sm:flex-row justify-between items-center p-3 backdrop-blur-sm rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm">
+        <p className="text-sm font-medium mb-2 sm:mb-0">
+          Selected Images: <span className="text-blue-600 font-bold">{selectedImages.length}</span>/{MAX_SELECTED_IMAGES}
         </p>
         {selectedImages.length > 0 && (
           <button
             onClick={() => setSelectedImages([])}
-            className="text-sm text-blue-600 hover:text-blue-800"
+            className="text-sm px-3 py-1 bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-800/40 rounded-md transition-colors duration-200"
           >
             Clear selection
           </button>
