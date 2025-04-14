@@ -18,7 +18,7 @@ export default function DeleteConfirmDialog({
     <Dialog open={!!projectId} onOpenChange={onCancel}>
       <DialogContent className="sm:max-w-[400px] p-6 rounded-2xl border border-white/10 bg-card/95 backdrop-blur-md shadow-2xl">
         <DialogHeader>
-          <DialogTitle className="text-xl font-bold text-destructive">
+          <DialogTitle className="text-xl font-bold text-gray-200">
             Delete Project
           </DialogTitle>
         </DialogHeader>
@@ -30,12 +30,14 @@ export default function DeleteConfirmDialog({
             <Button 
               variant="outline" 
               onClick={onCancel}
+              className=" border"
             >
               Cancel
             </Button>
             <Button 
               variant="destructive" 
               onClick={() => onConfirm(projectId)}
+              className="bg-red-500"
             >
               Delete
             </Button>

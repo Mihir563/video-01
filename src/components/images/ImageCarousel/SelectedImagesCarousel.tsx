@@ -130,18 +130,6 @@ export default function SelectedImagesCarousel({
     }
   };
 
-  // Return early if no images selected
-  if (selectedImages.length === 0) {
-    return (
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="w-full p-6 bg-gray-100 rounded-lg text-center shadow-inner"
-      >
-        <p className="text-gray-500 font-medium">No images selected yet</p>
-      </motion.div>
-    );
-  }
 
   const visibleImages = selectedImages.slice(
     startIndex,

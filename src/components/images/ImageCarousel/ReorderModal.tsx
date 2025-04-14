@@ -1,9 +1,14 @@
 // components/images/ImageCarousel/ReorderModal.tsx
 "use client";
 
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import Image from "next/image";
-import { motion, AnimatePresence, Reorder } from "framer-motion";
+import {
+  motion,
+  AnimatePresence,
+  Reorder,
+  useDragControls,
+} from "framer-motion";
 import { X, Save, Menu, MoveHorizontal, MinusCircle } from "lucide-react";
 import type { UserImage } from "@/types";
 
@@ -23,7 +28,7 @@ export default function ReorderModal({
   onRemoveImage,
 }: ReorderModalProps) {
   const modalRef = useRef<HTMLDivElement>(null);
-  
+
   // Get the actual reordered image objects
   const reorderedImages = reorderedIds.map(
     (id) =>
@@ -108,7 +113,10 @@ export default function ReorderModal({
           {/* Reorder instruction */}
           <div className="px-4 py-2 bg-blue-50 text-blue-800 text-sm flex items-center gap-2">
             <Menu className="w-4 h-4 text-blue-600" />
-            <p>Drag and drop to reorder. Changes only apply after saving.</p>
+            <p>
+              Hold an item for 2 seconds, then drag to reorder. Changes only
+              apply after saving.
+            </p>
           </div>
 
           {/* Reorderable content */}
@@ -168,26 +176,98 @@ export default function ReorderModal({
 }
 
 // Helper component for reorder item
-// components/images/ImageCarousel/ReorderModal.tsx (continued)
-
-// Helper component for reorder item
-function ReorderItem({ 
-  image, 
+function ReorderItem({
+  image,
   index,
-  onRemove 
-}: { 
-  image: UserImage; 
+  onRemove,
+}: {
+  image: UserImage;
   index: number;
   onRemove: () => void;
 }) {
+  const dragControls = useDragControls();
+  const [isDraggable, setIsDraggable] = useState(false);
+  const [holdTimer, setHoldTimer] = useState<NodeJS.Timeout | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const [showDragIndicator, setShowDragIndicator] = useState(false);
+
+  // Start hold timer on mouse/touch down
+  const handlePointerDown = () => {
+    // Start a timer for 2 seconds
+    const timer = setTimeout(() => {
+      setIsDraggable(true);
+      setShowDragIndicator(true);
+    }, 2000);
+
+    setHoldTimer(timer);
+  };
+
+  // Clear timer on mouse/touch up or leave
+  const handlePointerUp = () => {
+    if (holdTimer) {
+      clearTimeout(holdTimer);
+      setHoldTimer(null);
+    }
+
+    // Only reset draggable state if not currently dragging
+    if (!isDragging) {
+      setIsDraggable(false);
+      setShowDragIndicator(false);
+    }
+  };
+
+  // Clear timer when pointer leaves the element
+  const handlePointerLeave = () => {
+    if (holdTimer) {
+      clearTimeout(holdTimer);
+      setHoldTimer(null);
+    }
+
+    // Only reset if not currently dragging
+    if (!isDragging) {
+      setIsDraggable(false);
+      setShowDragIndicator(false);
+    }
+  };
+
+  // Custom handlers for drag state
+  const handleDragStart = () => {
+    setIsDragging(true);
+  };
+
+  const handleDragEnd = () => {
+    setIsDragging(false);
+    setIsDraggable(false);
+    setShowDragIndicator(false);
+  };
+
   return (
     <Reorder.Item
       key={image.id}
       value={image}
-      className="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden"
+      dragControls={dragControls}
+      dragListener={isDraggable}
+      onDragStart={handleDragStart}
+      onDragEnd={handleDragEnd}
+      className={`bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden ${
+        showDragIndicator ? "ring-2 ring-blue-500" : ""
+      }`}
     >
-      <div className="flex items-center p-2 cursor-move active:bg-gray-50">
-        <div className="flex items-center justify-center mr-3 text-gray-400">
+      <div
+        className={`flex items-center p-2 ${
+          isDraggable ? "cursor-grab active:cursor-grabbing" : ""
+        }`}
+        onPointerDown={handlePointerDown}
+        onPointerUp={handlePointerUp}
+        onPointerLeave={handlePointerLeave}
+        onTouchStart={handlePointerDown}
+        onTouchEnd={handlePointerUp}
+      >
+        <div
+          className={`flex items-center justify-center mr-3 ${
+            showDragIndicator ? "text-blue-500" : "text-gray-400"
+          }`}
+        >
           <MoveHorizontal className="w-5 h-5" />
         </div>
 
@@ -195,9 +275,10 @@ function ReorderItem({
           <Image
             src={image.url}
             alt={image.title}
-            width={64}
-            height={64}
-            className="object-cover rounded-md"
+            width={100}
+            height={100}
+            className="object-fill h-14 w-full rounded-md"
+            draggable={false}
           />
         </div>
 

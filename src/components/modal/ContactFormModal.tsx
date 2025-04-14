@@ -1,10 +1,10 @@
-// components/modal/ContactFormModal.tsx
 "use client";
 
 import { useState, useEffect } from "react";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import axios from "axios";
 import {
   Dialog,
   DialogContent,
@@ -22,9 +22,9 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { CheckCircle, Mail, User, X } from "lucide-react";
+import { AlertCircle, CheckCircle, Loader2, Mail, User, X } from "lucide-react";
 import { DialogClose } from "@radix-ui/react-dialog";
-import { Project } from "@/types/projects";
+import { useRouter } from "next/navigation";
 
 // Form validation schema
 const formSchema = z.object({
@@ -50,6 +50,8 @@ interface ContactFormModalProps {
   selectedImages: string[];
   images: selectedImagesProps[];
   template: string | undefined;
+  uniqueCode: string | undefined;
+  albumId: string | null;
 }
 
 export default function ContactFormModal({
@@ -57,13 +59,19 @@ export default function ContactFormModal({
   onClose,
   selectedImages,
   images,
-  template
+  template,
+  uniqueCode,
+  albumId,
 }: ContactFormModalProps) {
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [responseMessage, setResponseMessage] = useState<string>("");
+  const router = useRouter();
   const [selectedImageObjects, setSelectedImageObjects] = useState<
     selectedImagesProps[] | null
   >([]);
-  console.log(selectedImageObjects);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -74,113 +82,128 @@ export default function ContactFormModal({
     },
   });
 
-
   useEffect(() => {
     // Get selected images and ensure they have valid URLs
     const selected = selectedImages
       .map((id) => {
         const img = images.find((img) => img.id === id);
         if (!img) return undefined;
-        
+
         // Create a copy of the image with a processed URL
         return {
           ...img,
           // If URL is relative, make it absolute (this helps with image display)
-          url: img.url.startsWith('/') 
-            ? `${window.location.origin}${img.url}` 
-            : img.url
+          url: img.url.startsWith("/")
+            ? `${window.location.origin}${img.url}`
+            : img.url,
         };
       })
       .filter((img): img is selectedImagesProps => img !== undefined);
 
-    console.log({ selected: selected });
     setSelectedImageObjects(selected);
   }, [selectedImages, images]);
 
-  const onSubmit = (data: FormValues) => {
-    // Here you would typically send the data to your backend
-    console.log("Form submitted with data:", data);
-    console.log("Selected images:", selectedImages);
-
-    // Create a project object with all necessary data
-    const projectData = {
-      id: `proj_${Date.now()}`, // Generate a unique ID based on timestamp
-      createdAt: new Date().toISOString(),
-      images: selectedImageObjects || [],
-      template: template,
-      name: data.name,
-      whatsapp: data.whatsapp,
-      email: data.email,
-      status: 'pending', // Initial status is pending
-    };
-
-    console.log({ projectData });
-    
-    // Save to localStorage
+  const onSubmit = async (data: FormValues) => {
     try {
-      // Get existing projects or initialize empty array
-      const existingProjects = JSON.parse(localStorage.getItem('userProjects') || '[]');
-      
-      // Add new project to the beginning of the array
-      existingProjects.unshift(projectData);
-      
-      // Save back to localStorage
-      localStorage.setItem('userProjects', JSON.stringify(existingProjects));
-      console.log('Project saved successfully');
-      
-      // Simulate processing workflow with status changes
-      // Change to processing after 3 seconds
-      setTimeout(() => {
-        const projects = JSON.parse(localStorage.getItem('userProjects') || '[]');
-        const projectIndex = projects.findIndex((p: Project) => p.id === projectData.id);
-        
-        if (projectIndex !== -1) {
-          projects[projectIndex].status = 'processing';
-          localStorage.setItem('userProjects', JSON.stringify(projects));
-          console.log('Project status updated to processing');
-          
-          // Change to completed after another 5 seconds
-          setTimeout(() => {
-            const updatedProjects = JSON.parse(localStorage.getItem('userProjects') || '[]');
-            const updatedIndex = updatedProjects.findIndex((p: Project) => p.id === projectData.id);
-            
-            if (updatedIndex !== -1) {
-              updatedProjects[updatedIndex].status = 'completed';
-              localStorage.setItem('userProjects', JSON.stringify(updatedProjects));
-              console.log('Project status updated to completed');
-            }
-          }, 5000);
-        }
-      }, 3000);
-      
+      setIsSubmitting(true);
+      setError(null);
+
+      // Extract the album code and photobook_id from uniqueCode
+      // Assuming uniqueCode format is like 282853GMQB where part before letters is photobook_id
+      const photobook_id = uniqueCode || "";
+      const album_code = albumId || "";
+
+      // Prepare the image URLs for API request
+      const imageUrls = selectedImageObjects?.map((img) => img.url) || [];
+
+      // Create payload for API
+      const formData = new FormData();
+      formData.append("template_id", template || "1");
+      formData.append("album_code", album_code);
+      formData.append("photobook_id", photobook_id);
+      formData.append("user_name", data.name);
+      formData.append("user_email", data.email);
+      formData.append("user_phone", data.whatsapp);
+
+      // THIS is the key:
+      formData.append("selected_images", JSON.stringify(imageUrls));
+
+      console.log("Sending API request with payload:", formData);
+
+      // Send data to API using axios
+      const response = await axios.post(
+        "https://studio.codnix.com/creation/services/saveTemplateOrder",
+        formData
+      );
+
+      console.log("API response:", response.data);
+
+      // Store the response message
+      setResponseMessage(response.data.message || "");
+
+      // Check if the API returns status 1 for success
+      if (response.data.status === "1" || response.data.status === 1) {
+        setIsSuccess(true);
+        form.reset();
+        setTimeout(() => {
+          setIsSubmitted(false);
+          onClose();
+        }, 7000);
+      } else {
+        // If status is 0 or anything other than 1, treat as failure
+        setIsSuccess(false);
+        setError(
+          response.data.message ||
+            "Failed to submit your request. Please try again."
+        );
+      }
+
+      // Show the result message
+      setIsSubmitted(true);
+
+      // Close the modal after a delay if successful
+      if (response.data.status === "1" || response.data.status === 1) {
+        setTimeout(() => {
+          router.push("/projects");
+        }, 5000);
+      }
     } catch (error) {
-      console.error('Error saving project to localStorage:', error);
+      console.error("Error submitting form:", error);
+      setIsSuccess(false);
+      setError("Failed to submit your request. Please try again.");
+      setIsSubmitted(true);
+    } finally {
+      setIsSubmitting(false);
     }
-    
-    // Show success message
-    setIsSubmitted(true);
-
-    // Reset form after submission
-    form.reset();
-
-    // Close the modal after a delay
-    setTimeout(() => {
-      setIsSubmitted(false);
-      onClose();
-    }, 10000);
   };
 
+  // For debugging - this can be removed in production
+  const fetchAlbumData = async () => {
+    if (uniqueCode) {
+      try {
+        const response = await axios.get(
+          `https://studio.codnix.com/creation/ealbum/${uniqueCode}.json`
+        );
+        console.log("Album data:", response.data);
+      } catch (error) {
+        console.error("Error fetching album data:", error);
+      }
+    }
+  };
 
- 
+  // Optional: Fetch album data when component mounts
+  useEffect(() => {
+    fetchAlbumData();
+  }, [uniqueCode]);
 
   return (
-    <Dialog open={isOpen} >
+    <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[500px] rounded-2xl border border-white/10 dark:bg-zinc-900/70 backdrop-blur-md shadow-2xl transition-all duration-300 animate-in slide-in-from-bottom-6">
         {!isSubmitted ? (
           <div className="p-8">
             <DialogClose asChild>
               <button
-                onClick={() =>onClose()}
+                onClick={() => onClose()}
                 className="absolute top-3 right-3 text-gray-500 dark:text-gray-300 hover:text-red-500 transition-colors"
                 aria-label="Close"
               >
@@ -196,6 +219,12 @@ export default function ContactFormModal({
                 We will need your contact details to send you the video.
               </DialogDescription>
             </DialogHeader>
+
+            {error && (
+              <div className="mb-4 p-3 bg-red-100 border border-red-300 text-red-700 rounded-md">
+                {error}
+              </div>
+            )}
 
             <Form {...form}>
               <form
@@ -252,7 +281,7 @@ export default function ContactFormModal({
                           </span>
                           <Input
                             placeholder="+91 98765 43210"
-                            className="pl-10  dark:bg-gray-800 dark:text-white border-gray-300 dark:border-gray-700 focus:ring-2 focus:ring-blue-500 focus:outline-none rounded-md"
+                            className="pl-10 dark:bg-gray-800 dark:text-white border-gray-300 dark:border-gray-700 focus:ring-2 focus:ring-blue-500 focus:outline-none rounded-md"
                             {...field}
                           />
                         </div>
@@ -292,9 +321,17 @@ export default function ContactFormModal({
                 <div className="pt-4">
                   <Button
                     type="submit"
-                    className="w-full h-12 text-lg rounded-xl font-semibold text-white bg-blue-500  hover:bg-blue-600 transition-all duration-300 focus:ring-2 focus:ring-blue-500"
+                    disabled={isSubmitting}
+                    className="w-full h-12 text-lg rounded-xl font-semibold text-white bg-blue-500 hover:bg-blue-600 transition-all duration-300 focus:ring-2 focus:ring-blue-500 disabled:opacity-70"
                   >
-                    Submit & Generate
+                    {isSubmitting ? (
+                      <>
+                        <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                        Processing...
+                      </>
+                    ) : (
+                      "Submit & Generate"
+                    )}
                   </Button>
                 </div>
               </form>
@@ -302,13 +339,36 @@ export default function ContactFormModal({
           </div>
         ) : (
           <div className="flex flex-col items-center justify-center text-center p-10 animate-in fade-in zoom-in-95">
-            <CheckCircle className="h-16 w-16 text-green-500 mb-4 animate-pulse" />
-            <h3 className="text-2xl font-bold text-gray-900 dark:text-white">
-              Request Received!
-            </h3>
-            <p className="text-gray-600 dark:text-gray-400 mt-2 max-w-sm">
-              You’ll get your video via WhatsApp or email shortly.
-            </p>
+            {isSuccess ? (
+              <>
+                <CheckCircle className="h-16 w-16 text-green-500 mb-4 animate-pulse" />
+                <h3 className="text-2xl font-bold text-gray-900 dark:text-white">
+                  Request Successful
+                </h3>
+                <p className="text-gray-600 dark:text-gray-400 mt-2 max-w-sm">
+                  {responseMessage || "Template Order Saved Successfully"}
+                </p>
+                <p className="text-gray-600 dark:text-gray-400 mt-4 max-w-sm">
+                  You'll get your video via WhatsApp or email shortly.
+                </p>
+              </>
+            ) : (
+              <>
+                <AlertCircle className="h-16 w-16 text-red-500 mb-4 animate-pulse" />
+                <h3 className="text-2xl font-bold text-gray-900 dark:text-white">
+                  Request Failed
+                </h3>
+                <p className="text-gray-600 dark:text-gray-400 mt-2 max-w-sm">
+                  {error || "Something went wrong. Please try again later."}
+                </p>
+                <Button
+                  onClick={() => setIsSubmitted(false)}
+                  className="mt-6 bg-blue-500 hover:bg-blue-600"
+                >
+                  Try Again
+                </Button>
+              </>
+            )}
           </div>
         )}
       </DialogContent>

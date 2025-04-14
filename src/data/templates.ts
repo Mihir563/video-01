@@ -2,45 +2,45 @@
 
 import { Template } from "@/types"
 
-export const templates: Template[] = [
-  {
-    id: "slide-show",
-    title: "Slideshow",
-    description: "Elegant transitions with smooth fade effects",
-    url:"/assets/first.mp4",
-    thumbnail: "/thumbnails/fade-template.jpg",
-    bestFor: "professional presentations and portfolios",
-    tags: ["Professional", "Elegant", "Minimal"],
-    effect: "fade"
-  },
-  {
-    id: "zoom-out",
-    title: "Zoom out",
-    description: "Engaging zoom effects that bring focus to your images",
-    url:"/assets/second.mp4",
-    thumbnail: "/thumbnails/zoom-template.jpg",
-    bestFor: "product showcases and travel highlights",
-    tags: ["Dynamic", "Engaging", "Modern"],
-    effect: "zoom"
-  },
-  {
-    id: "smooth-slide",
-    title: "Smooth Slide",
-    description: "Fluid slide transitions for an impressive presentation",
-    url:"/assets/video.mp4",
-    thumbnail: "/thumbnails/slide-template.jpg",
-    bestFor: "storytelling and sequential content",
-    tags: ["Smooth", "Fluid", "Clean"],
-    effect: "slide"
-  },
-  {
-    id: "kenburns",
-    title: "Ken Burns Effect",
-    description: "Classic pan and zoom effects for a cinematic feel",
-    url:"/assets/video.mp4",
-    thumbnail: "/thumbnails/kenburns-template.jpg",
-    bestFor: "documentary style and nostalgic content",
-    tags: ["Cinematic", "Classic", "Dramatic"],
-    effect: "kenburns"
+// Default templates as fallback
+
+// Function to map API response to UI-compatible format
+const mapApiTemplateToUI = (template: Template): Template => {
+  return {
+    ...template,
+    id: template.template_id,
+    title: template.name,
+    description: `Beautiful ${template.name} template with ${template.required_images} required images`,
+    url: "/assets/video.mp4", // Default video URL
+    thumbnail: template.thumb_url || `/thumbnails/${template.folder_prefix.toLowerCase()}.jpg`,
+    bestFor: "creating stunning videos",
+    tags: ["Professional", "Modern", "Creative"],
+    effect: template.folder_prefix.split('_')[1]?.toLowerCase() || "fade"
+  };
+};
+
+// Function to fetch templates from API
+export const fetchTemplates = async (): Promise<Template[]> => {
+  try {
+    const response = await fetch('https://studio.codnix.com/creation/services/getTemplates');
+    
+    if (!response.ok) {
+      throw new Error(`API error: ${response.status}`);
+    }
+    
+    const data = await response.json();
+    
+    if (data.status === "1" && Array.isArray(data.data)) {
+      return data.data.map(mapApiTemplateToUI);
+    } else {
+      console.error("Invalid API response format", data);
+      return [];
+    }
+  } catch (error) {
+    console.error("Error fetching templates:", error);
+    return [];
   }
-]
+};
+
+// Export static templates for SSR/fallback
+export const templates: Template[] = [];

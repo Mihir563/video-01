@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import type { Template } from "@/types";
@@ -13,6 +13,16 @@ interface TemplateCardProps {
 
 export default function TemplateCard({ template }: TemplateCardProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [imageError, setImageError] = useState(false);
+  const [templateValid, setTemplateValid] = useState(true);
+
+  useEffect(() => {
+    // Validate template data
+    if (!template || (!template.name && !template.title)) {
+      console.error("Invalid template data:", template);
+      setTemplateValid(false);
+    }
+  }, [template]);
 
   return (
     <>
@@ -28,12 +38,22 @@ export default function TemplateCard({ template }: TemplateCardProps) {
             animate={{ opacity: 1 }}
             transition={{ duration: 1 }}
           >
-            <Image
-              src={template.thumbnail || "/placeholder.svg"}
-              alt={template.title}
-              fill
-              className="object-cover transition-transform duration-700 group-hover:scale-110"
-            />
+            {templateValid ? (
+              <Image
+                src={imageError ? "/placeholder.svg" : (template.thumbnail || template.thumb_url || "/placeholder.svg")}
+                alt={template.title || template.name || "Template"}
+                fill
+                className="object-cover transition-transform duration-700 group-hover:scale-110"
+                onError={() => {
+                  console.error("Failed to load template image:", template.thumbnail || template.thumb_url);
+                  setImageError(true);
+                }}
+              />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center bg-gray-200 dark:bg-gray-800">
+                <span className="text-sm text-gray-500 dark:text-gray-400">Template preview unavailable</span>
+              </div>
+            )}
           </motion.div>
           <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/30 to-transparent opacity-70 group-hover:opacity-90 transition-opacity duration-300" />
         </div>
@@ -46,9 +66,13 @@ export default function TemplateCard({ template }: TemplateCardProps) {
         >
           <h3 className="text-lg font-bold text-foreground flex items-center gap-2">
             <SparklesIcon className="w-5 h-5 text-primary animate-pulse" />
-            {template.title}
+            {templateValid ? (template.title || template.name) : "Unknown Template"}
           </h3>
-          <p className="text-sm text-muted-foreground line-clamp-1">{template.description}</p>
+          <p className="text-sm text-muted-foreground line-clamp-1">
+            {templateValid 
+              ? (template.description || (template.required_images ? `Required images: ${template.required_images}` : "No description available"))
+              : "Template information unavailable"}
+          </p>
         </motion.div>
 
         <motion.div
@@ -63,7 +87,7 @@ export default function TemplateCard({ template }: TemplateCardProps) {
         </motion.div>
       </motion.div>
 
-      <TemplateModal template={template} isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+      {templateValid && <TemplateModal template={template} isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />}
     </>
   );
 }

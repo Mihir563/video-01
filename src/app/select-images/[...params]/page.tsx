@@ -2,22 +2,30 @@
 
 import { useState, useEffect, use } from "react";
 import ImageGrid from "@/components/images/image-grid";
-import { templates } from "@/data/templates";
+import { fetchTemplates } from "@/data/templates";
 import type { UserImage } from "@/types";
 import MaxImagesModal from "@/components/modal/MaximumImage";
+import { Template } from "@/types";
 import Pagination from "@/components/Pagination";
 import ContactFormModal from "@/components/modal/ContactFormModal";
+import SelectedImagesCarousel from "@/components/images/ImageCarousel/SelectedImagesCarousel";
 
 export default function SelectImagesPage({
   params: paramsPromise,
 }: {
-  params: Promise<{ templateId: string }>;
+  params: Promise<{ params: string[] }>;
 }) {
-  const params = use(paramsPromise); // Unwrap params using React.use()
+  const { params } = use(paramsPromise);
+
+  const [kind, templateId] = params;
+
+  // State for template
+  const [template, setTemplate] = useState<Template | undefined>(undefined);
+
   const [images, setImages] = useState<UserImage[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedImages, setSelectedImages] = useState<string[]>([]);
-  const [albumId, setAlbumId] = useState<string | null>("2800851DKU");
+  const [albumId, setAlbumId] = useState<string | null>(null);
   const [isMaxImagesModalOpen, setIsMaxImagesModalOpen] = useState(false);
   const [pendingImageToAdd, setPendingImageToAdd] = useState<string | null>(
     null
@@ -25,13 +33,27 @@ export default function SelectImagesPage({
   const [currentPage, setCurrentPage] = useState(1);
   const [paginatedImages, setPaginatedImages] = useState<UserImage[]>([]);
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);
+  const [uniqueCode, setUniqueCode] = useState()
   const IMAGES_PER_PAGE = 20;
 
   useEffect(() => {
-    if (params.templateId) {
-      setAlbumId(params.templateId);
-    }
-  }, [params.templateId]);
+    const getTemplate = async () => {
+      try {
+        const fetchedTemplates = await fetchTemplates();
+        const foundTemplate = fetchedTemplates.find(t => t.template_id === kind);
+        setTemplate(foundTemplate);
+      } catch (error) {
+        console.error("Error fetching template:", error);
+      }
+    };
+    
+    getTemplate();
+  }, [kind]);
+
+  useEffect(() => {
+
+    setAlbumId(templateId)
+  }, [kind, templateId]);
 
   useEffect(() => {
     const startIndex = (currentPage - 1) * IMAGES_PER_PAGE;
@@ -49,15 +71,13 @@ export default function SelectImagesPage({
     });
   };
 
-  const template = templates.find((t) => t.id === params.templateId);
-  const MAX_SELECTED_IMAGES = 10;
+  const MAX_SELECTED_IMAGES = template?.required_images || 2;
 
   // Fetch images from API
   useEffect(() => {
     const fetchImages = async () => {
       setLoading(true);
       try {
-        console.log("[ImageLoader] Fetching images from API");
         const response = await fetch(
           `https://studio.codnix.com/creation/ealbum/${albumId}.json`
         );
@@ -69,7 +89,10 @@ export default function SelectImagesPage({
         }
 
         const data = await response.json();
-        console.log("[ImageLoader] Images data received successfully");
+
+        const uid = data.Id
+
+        setUniqueCode(uid)
 
         // Transform API data to our UserImage format
         const apiImages: UserImage[] = Object.entries(data.ImagesServer).map(
@@ -81,7 +104,6 @@ export default function SelectImagesPage({
           })
         );
 
-        console.log(`[ImageLoader] Processed ${apiImages.length} images`);
         setImages(apiImages);
       } catch (error) {
         console.error("[ImageLoader] Error fetching images:", error);
@@ -102,7 +124,6 @@ export default function SelectImagesPage({
       if (index !== -1) {
         newSelection[index] = newImageId;
       }
-      console.log(newSelection);
       return newSelection;
     });
 
@@ -153,8 +174,6 @@ export default function SelectImagesPage({
   // Add padding to the bottom of the page to prevent content from being hidden by the fixed carousel
   const carouselHeight = selectedImages.length > 0 ? "" : "";
 
-  console.log(isContactModalOpen)
-  
 
   return (
     <div className={`container mx-auto px-4 py-12 pt-32 ${carouselHeight}`}>
@@ -164,24 +183,27 @@ export default function SelectImagesPage({
         </h1>
         {template && (
           <p className="text-lg mb-2">
-            Template: <span className="font-medium">{template.title}</span>
+            Template: <span className="font-medium">{template.name || "template"}</span>
           </p>
         )}
         <p className="mb-8">
-          Choose up to {MAX_SELECTED_IMAGES} images and an audio file to create
-          your video
+          Choose up to {MAX_SELECTED_IMAGES} images to create your video
         </p>
       </section>
 
       {/* Image selection counter */}
-      <div className="mb-6 flex flex-col sm:flex-row justify-between items-center p-3 backdrop-blur-sm rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm">
-        <p className="text-sm font-medium mb-2 sm:mb-0">
-          Selected Images: <span className="text-blue-600 font-bold">{selectedImages.length}</span>/{MAX_SELECTED_IMAGES}
+      <div className="mb-6 flex flex-col items-left justify-start p-4 m-2 backdrop-blur-sm rounded-lg ">
+        <p className="text-sm font-medium mb-2 sm:mb-0 border p-3 rounded-lg  backdrop-blur-sm">
+          Selected Images:{" "}
+          <span className="text-blue-600 font-bold">
+            {selectedImages.length}
+          </span>
+          /{MAX_SELECTED_IMAGES}
         </p>
         {selectedImages.length > 0 && (
           <button
             onClick={() => setSelectedImages([])}
-            className="text-sm px-3 py-1 bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-800/40 rounded-md transition-colors duration-200"
+            className="text-lg px-3 bg-red-50 dark:bg-red-900/30 text-red-600 mt-3 p-2 dark:text-red-400 hover:bg-red-800/40 rounded-md transition-colors duration-200"
           >
             Clear selection
           </button>
@@ -220,7 +242,7 @@ export default function SelectImagesPage({
       px-8 py-4 rounded-lg text-lg font-medium transition-all duration-300 transform
       ${
         selectedImages.length < 2
-          ? "bg-gray-400 cursor-not-allowed animate-wiggle text-gray-200 border-2 border-dashed border-red-400 shadow-[0_0_20px_rgba(255,0,0,0.4)]"
+          ? "bg-gray-400 cursor-not-allowed animate-wiggle text-gray-200 border-2  border-red-400 shadow-[0_0_20px_rgba(255,0,0,0.4)]"
           : "text-white bg-blue-500 hover:scale-105 "
       }
     `}
@@ -228,7 +250,7 @@ export default function SelectImagesPage({
           onClick={() => setIsContactModalOpen(!isContactModalOpen)}
         >
           {selectedImages.length < 2
-            ? "Please select atleast tow images! 🍽️"
+            ? "Please select atleast two images!"
             : "Generate Video"}
         </button>
       </div>
@@ -251,7 +273,17 @@ export default function SelectImagesPage({
         onClose={() => setIsContactModalOpen(false)}
         selectedImages={selectedImages}
         images={images}
-        template={template?.title}
+        template={kind}
+        albumId={albumId}
+        uniqueCode={uniqueCode}
+      />
+
+      <SelectedImagesCarousel
+        allImages={images}
+        selectedImageIds={selectedImages}
+        onRemoveImage={removeImageFromSelection}
+        // @ts-expect-error: please ignore this!!
+        onReorderImages={handleReplaceImage}
       />
     </div>
   );

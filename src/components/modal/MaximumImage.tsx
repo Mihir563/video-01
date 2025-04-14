@@ -37,7 +37,6 @@ const MaxImagesModal: React.FC<MaxImagesModalProps> = ({
     string | null
   >(null);
 
-  console.log(images)
   // Reset selection state when modal closes
   React.useEffect(() => {
     if (!isOpen) {
@@ -68,7 +67,7 @@ const MaxImagesModal: React.FC<MaxImagesModalProps> = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[500px] rounded-2xl border border-white/10 bg-white/80 dark:bg-zinc-900/70 backdrop-blur-md shadow-2xl transition-all duration-300 animate-in slide-in-from-bottom-6">
+      <DialogContent className="sm:max-w-[600px] rounded-2xl border border-white/10 bg-white/80 dark:bg-zinc-900/70 backdrop-blur-md shadow-2xl transition-all duration-300 animate-in slide-in-from-bottom-6">
         <DialogHeader className="text-center">
           <DialogTitle className="text-xl font-bold text-white flex items-center justify-center gap-2">
             <AlertTriangle className="w-5 h-5 text-amber-400" />
@@ -159,7 +158,7 @@ const MaxImagesModal: React.FC<MaxImagesModalProps> = ({
                   height={24}
                   src={pendingImage.url}
                   alt={pendingImage.title}
-                  className="h-24 object"
+                  className="h-30 w-full object-fill"
                 />
               </div>
             </div>

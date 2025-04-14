@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Project } from "@/types/projects";
+import Image from "next/image";
 
 interface ProjectDialogProps {
   project: Project | null;
@@ -72,7 +73,9 @@ export default function ProjectDialog({ project, onClose }: ProjectDialogProps) 
                   {/* Display the actual image or fallback to a gradient */}
                   {image.url ? (
                     <div className="w-full h-full">
-                      <img 
+                      <Image
+                        height={100} 
+                        width={100}
                         src={image.url} 
                         alt={image.title || 'Project image'}
                         className="w-full h-full object-cover"

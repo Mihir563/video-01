@@ -1,21 +1,20 @@
 "use client";
 
-import { Trash2, Eye } from "lucide-react";
+import { Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Project } from "@/types/projects";
 import { StatusBadge } from "./statusbedge";
+import Image from "next/image";
 
 interface ProjectCardProps {
   project: Project;
   onView: (project: Project) => void;
-  onDelete: (id: string) => void;
   formatDate: (dateString: string) => string;
 }
 
 export default function ProjectCard({ 
   project, 
   onView, 
-  onDelete, 
   formatDate 
 }: ProjectCardProps) {
   return (
@@ -28,7 +27,9 @@ export default function ProjectCard({
               {/* Display the actual image or fallback to a gradient */}
               {project.images[0].url ? (
                 <div className="w-full h-full">
-                  <img 
+                  <Image
+                    width={100} 
+                    height={100}
                     src={project.images[0].url} 
                     alt={project.images[0].title || 'Project image'}
                     className="w-full h-full object-cover"
@@ -83,16 +84,6 @@ export default function ProjectCard({
           >
             <Eye className="w-3 h-3" />
             View Details
-          </Button>
-          
-          <Button 
-          variant="outline" 
-            size="sm" 
-            className="text-xs flex items-center gap-1"
-            onClick={() => onDelete(project.id)}
-          >
-            <Trash2 className="w-3 h-3" />
-            Delete
           </Button>
         </div>
       </div>

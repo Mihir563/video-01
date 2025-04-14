@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useRef } from "react"
+import { useEffect, useRef, useState } from "react"
 import { useRouter } from "next/navigation"
 import type { Template } from "@/types"
 
@@ -10,10 +10,26 @@ interface TemplateModalProps {
   onClose: () => void
 }
 
+interface AlbumCodeProps {
+  albumId: string | null
+}
+
 export default function TemplateModal({ template, isOpen, onClose }: TemplateModalProps) {
   const router = useRouter()
   const overlayRef = useRef<HTMLDivElement>(null)
   const contentRef = useRef<HTMLDivElement>(null)
+  const [albumId, setAlbumId] = useState<string | null>(null)
+
+// Extract album ID from URL query parameter 'c' if present
+useEffect(() => {
+  const queryParams = new URLSearchParams(window.location.search);
+  const albumCodeValue = queryParams.get('c');
+  const albumCode: AlbumCodeProps = { albumId: albumCodeValue };
+  if (albumCodeValue) {
+    setAlbumId(albumCode.albumId);
+  }
+}, []);
+
 
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
@@ -47,7 +63,7 @@ export default function TemplateModal({ template, isOpen, onClose }: TemplateMod
   const handleSelectTemplate = () => {
     handleClose()
     // Navigate to image selection page with the selected template
-    router.push(`/select-images/${template.id}`)
+    router.push(`/select-images/${template.id || template.template_id}/${albumId}`)
   }
 
   if (!isOpen) return null
@@ -73,7 +89,7 @@ export default function TemplateModal({ template, isOpen, onClose }: TemplateMod
         <div className="aspect-video relative">
           <video
             src={template.url}
-            poster={template.thumbnail}
+            poster={template.thumbnail || template.thumb_url || "/placeholder.svg"}
             className="w-full h-full object-cover"
             controls
             autoPlay
@@ -82,8 +98,15 @@ export default function TemplateModal({ template, isOpen, onClose }: TemplateMod
         </div>
 
         <div className="p-6">
-          <h2 className="text-2xl font-bold mb-2 text-gray-900 dark:text-white">{template.title}</h2>
-          <p className="text-gray-700 dark:text-gray-300 mb-6">{template.description}</p>
+          <h2 className="text-2xl font-bold mb-2 text-gray-900 dark:text-white">{template.title || template.name}</h2>
+          <p className="text-gray-700 dark:text-gray-300 mb-6">
+            {template.description || `Beautiful template with ${template.required_images} required images`}
+          </p>
+          <div className="mb-4 text-sm">
+            <p><span className="font-semibold">Template ID:</span> {template.template_id}</p>
+            <p><span className="font-semibold">Required Images:</span> {template.required_images}</p>
+            <p><span className="font-semibold">Folder Prefix:</span> {template.folder_prefix}</p>
+          </div>
 
           <div className="flex flex-wrap gap-4">
             <button
