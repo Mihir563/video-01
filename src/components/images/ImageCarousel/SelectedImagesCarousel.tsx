@@ -127,7 +127,7 @@ export default function SelectedImagesCarousel({
             >
               <CarouselContent>
                 {selectedImages.map((image, index) => (
-                  <CarouselItem key={image.id} className="basis-auto md:basis-1/5">
+                  <CarouselItem key={image.id} className="basis-auto">
                     <div 
                       className="relative w-32 h-24 mx-auto cursor-pointer group"
                       onClick={() => handleImageClick(image.id)}
