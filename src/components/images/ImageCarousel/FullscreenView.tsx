@@ -108,18 +108,18 @@ export default function FullscreenView({
           className="relative max-w-5xl w-full mx-auto"
         >
           {/* Image container with fixed dimensions */}
-          <div className="relative w-full h-64 sm:h-80 md:h-96 lg:h-screen lg:max-h-[70vh]">
+          <div className="relative w-full h-80 sm:h-80 md:h-96 lg:h-screen lg:max-h-[70vh]">
             <Image
               src={openedImageData.url}
               alt={openedImageData.title}
               fill
-              className="object-contain"
+              className="object-contain w-full h-full"
               priority
             />
           </div>
 
           {/* Control buttons with animations */}
-          <div className="absolute top-1 right-15 flex gap-3">
+          <div className="absolute top-1 right-1 flex gap-3">
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
