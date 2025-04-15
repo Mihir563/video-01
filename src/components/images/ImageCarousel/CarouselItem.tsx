@@ -32,7 +32,7 @@ export default function CarouselItem({
           alt={image.title}
           width={138}
           height={128}
-          className="h-full object-fill rounded-lg shadow-md"
+          className="h-full object-cover rounded-lg shadow-md"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent rounded-lg opacity-0 group-hover:opacity-100 transition-opacity" />
 

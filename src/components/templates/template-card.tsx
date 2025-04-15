@@ -29,7 +29,7 @@ export default function TemplateCard({ template }: TemplateCardProps) {
       <motion.div
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
-        className="group relative rounded-xl overflow-hidden futuristic-border cursor-pointer bg-gradient-to-br from-card to-background shadow-lg shadow-primary/20 hover:shadow-primary/40 transition-all duration-500"
+        className="group relative rounded-xl overflow-hidden futuristic-border cursor-pointer bg-gradient-to-br from-card to-background shadow-xl shadow-primary/20 hover:shadow-primary/30 transition-all duration-500"
         onClick={() => setIsModalOpen(true)}
       >
         <div className="aspect-video relative overflow-hidden">
@@ -40,18 +40,29 @@ export default function TemplateCard({ template }: TemplateCardProps) {
           >
             {templateValid ? (
               <Image
-                src={imageError ? "/placeholder.svg" : (template.thumbnail || template.thumb_url || "/placeholder.svg")}
+                src={
+                  imageError
+                    ? "/placeholder.svg"
+                    : template.thumbnail ||
+                      template.thumb_url ||
+                      "/placeholder.svg"
+                }
                 alt={template.title || template.name || "Template"}
                 fill
                 className="object-cover transition-transform duration-700 group-hover:scale-110"
                 onError={() => {
-                  console.error("Failed to load template image:", template.thumbnail || template.thumb_url);
+                  console.error(
+                    "Failed to load template image:",
+                    template.thumbnail || template.thumb_url
+                  );
                   setImageError(true);
                 }}
               />
             ) : (
               <div className="w-full h-full flex items-center justify-center bg-gray-200 dark:bg-gray-800">
-                <span className="text-sm text-gray-500 dark:text-gray-400">Template preview unavailable</span>
+                <span className="text-sm text-accent">
+                  Template preview unavailable
+                </span>
               </div>
             )}
           </motion.div>
@@ -64,13 +75,18 @@ export default function TemplateCard({ template }: TemplateCardProps) {
           transition={{ duration: 0.5, delay: 0.2 }}
           className="absolute bottom-0 left-0 right-0 p-4"
         >
-          <h3 className="text-lg font-bold text-foreground flex items-center gap-2">
-            <SparklesIcon className="w-5 h-5 text-primary animate-pulse" />
-            {templateValid ? (template.title || template.name) : "Unknown Template"}
+          <h3 className="text-lg font-bold text-blue-400 flex items-center gap-2">
+            <SparklesIcon className="w-5 h-5  text-yellow-500 animate-pulse" />
+            {templateValid
+              ? template.title || template.name
+              : "Unknown Template"}
           </h3>
-          <p className="text-sm text-muted-foreground line-clamp-1">
-            {templateValid 
-              ? (template.description || (template.required_images ? `Required images: ${template.required_images}` : "No description available"))
+          <p className="text-sm text-blue-400 line-clamp-1">
+            {templateValid
+              ? template.description ||
+                (template.required_images
+                  ? `Required images: ${template.required_images}`
+                  : "No description available")
               : "Template information unavailable"}
           </p>
         </motion.div>
@@ -81,13 +97,19 @@ export default function TemplateCard({ template }: TemplateCardProps) {
           whileHover={{ scale: 1.1 }}
           className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300"
         >
-          <span className="px-4 py-2 bg-primary/90 rounded-full text-sm font-medium text-primary-foreground shadow-md shadow-primary/50">
+          <span className="px-4 py-2 bg-black/20 rounded-full text-sm font-medium text-blue-300 shadow-md shadow-primary/50">
             Preview Template
           </span>
         </motion.div>
       </motion.div>
 
-      {templateValid && <TemplateModal template={template} isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />}
+      {templateValid && (
+        <TemplateModal
+          template={template}
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+        />
+      )}
     </>
   );
 }

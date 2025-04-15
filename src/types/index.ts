@@ -5,7 +5,7 @@ export interface Template {
   name: string;
   folder_prefix: string;
   required_images: number | null;
-  gif_url: string | null;
+  gif_url: string | undefined;
   thumb_url: string | null;
   status: string;
   createdon: string;

@@ -277,7 +277,7 @@ function ReorderItem({
             alt={image.title}
             width={100}
             height={100}
-            className="object-fill h-14 w-full rounded-md"
+            className="object-cover h-14 w-full rounded-md"
             draggable={false}
           />
         </div>

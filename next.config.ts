@@ -1,7 +1,6 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  matcher: ["/"],
   images: {
     domains: ["storage.ealbum.in", "ealbum.in"],
     // Add remotePatterns for more flexibility

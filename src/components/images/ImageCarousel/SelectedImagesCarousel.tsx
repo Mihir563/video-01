@@ -1,14 +1,21 @@
-// components/images/ImageCarousel/SelectedImagesCarousel.tsx (refactored)
+// components/images/ImageCarousel/SelectedImagesCarousel.tsx 
 "use client";
 
 import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { ArrowUpDown } from "lucide-react";
 import type { UserImage } from "@/types";
-import CarouselItem from "./CarouselItem";
 import FullscreenView from "./FullscreenView";
 import ReorderModal from "./ReorderModal";
-import { useSwipe } from "./hooks/useSwipe";
+import Image from "next/image";
+import { Maximize2, MinusCircle } from "lucide-react";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
 
 interface SelectedImagesCarouselProps {
   selectedImageIds: string[];
@@ -23,13 +30,9 @@ export default function SelectedImagesCarousel({
   onRemoveImage,
   onReorderImages,
 }: SelectedImagesCarouselProps) {
-  const [startIndex, setStartIndex] = useState(0);
   const [openedImage, setOpenedImage] = useState<string | null>(null);
   const [isReorderModalOpen, setIsReorderModalOpen] = useState(false);
   const [reorderedIds, setReorderedIds] = useState<string[]>([]);
-
-  // Fixed visible count to 5 as per requirement
-  const visibleCount = 5;
 
   // Get the actual image objects for the selected IDs
   const selectedImages = selectedImageIds.map(
@@ -45,55 +48,6 @@ export default function SelectedImagesCarousel({
   useEffect(() => {
     setReorderedIds([...selectedImageIds]);
   }, [selectedImageIds]);
-
-  const handlePrev = () => {
-    setStartIndex((prev) => Math.max(0, prev - 1));
-  };
-
-  const handleNext = () => {
-    setStartIndex((prev) =>
-      Math.min(Math.max(0, selectedImages.length - visibleCount), prev + 1)
-    );
-  };
-
-  // Use our custom swipe hook
-  const { elementRef, swipeDirection, handlers } = useSwipe({
-    onSwipeLeft: () => {
-      if (startIndex < selectedImages.length - visibleCount) {
-        handleNext();
-      }
-    },
-    onSwipeRight: () => {
-      if (startIndex > 0) {
-        handlePrev();
-      }
-    },
-  });
-
-  // Handle window resize for responsiveness
-  useEffect(() => {
-    const handleResize = () => {
-      // Adjust startIndex on resize if needed
-      if (selectedImages.length <= visibleCount) {
-        setStartIndex(0);
-      } else if (startIndex > selectedImages.length - visibleCount) {
-        setStartIndex(Math.max(0, selectedImages.length - visibleCount));
-      }
-    };
-
-    handleResize();
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, [selectedImages.length, startIndex, visibleCount]);
-
-  // Adjust startIndex if it would create an empty space at the end
-  useEffect(() => {
-    if (selectedImages.length <= visibleCount) {
-      setStartIndex(0);
-    } else if (startIndex > selectedImages.length - visibleCount) {
-      setStartIndex(Math.max(0, selectedImages.length - visibleCount));
-    }
-  }, [selectedImages.length, startIndex, visibleCount]);
 
   // Handle image click to open fullscreen
   const handleImageClick = (imageId: string) => {
@@ -130,28 +84,6 @@ export default function SelectedImagesCarousel({
     }
   };
 
-
-  const visibleImages = selectedImages.slice(
-    startIndex,
-    startIndex + visibleCount
-  );
-
-  // Animation variants
-  const carouselVariants = {
-    enter: (direction: "left" | "right" | null) => ({
-      x: direction === "left" ? 100 : -100,
-      opacity: 0,
-    }),
-    center: {
-      x: 0,
-      opacity: 1,
-    },
-    exit: (direction: "left" | "right" | null) => ({
-      x: direction === "left" ? -100 : 100,
-      opacity: 0,
-    }),
-  };
-
   return (
     <>
       {/* Fixed carousel at bottom with backdrop blur for modern look */}
@@ -183,61 +115,64 @@ export default function SelectedImagesCarousel({
               </span>
             </motion.button>
           </div>
-          {/* @ts-expect-error: just ignore this man! */}
-          <div ref={elementRef} {...handlers} className="relative cursor-grab">
-            <div className="flex items-center">
-              <div
-                className={`flex mx-auto ${
-                  selectedImages.length === 1
-                    ? "justify-center w-full"
-                    : "overflow-hidden w-full"
-                }`}
-              >
-                <AnimatePresence custom={swipeDirection} initial={false}>
-                  <motion.div
-                    key={startIndex}
-                    custom={swipeDirection}
-                    variants={carouselVariants}
-                    initial="enter"
-                    animate="center"
-                    exit="exit"
-                    transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                    className="flex w-full justify-center gap-3"
-                  >
-                    {visibleImages.map((image) => (
-                      <CarouselItem
-                        key={image.id}
-                        //@ts-expect-error: just ignore this man!
-                        image={image}
-                        position={selectedImageIds.indexOf(image.id) + 1}
-                        onClick={() => handleImageClick(image.id)}
-                        onRemove={(e) => handleRemoveImage(image.id, e)}
+          
+          {/* Shadcn Carousel */}
+          <div className="sm:w-[50%] w-full mx-auto">
+            <Carousel
+              opts={{
+                align: "start",
+                loop: false,
+              }}
+              className="w-full"
+            >
+              <CarouselContent>
+                {selectedImages.map((image, index) => (
+                  <CarouselItem key={image.id} className="basis-auto md:basis-1/5">
+                    <div 
+                      className="relative w-32 h-24 mx-auto cursor-pointer group"
+                      onClick={() => handleImageClick(image.id)}
+                    >
+                      <Image
+                        src={image.url}
+                        alt={image.title}
+                        width={138}
+                        height={128}
+                        className="h-full object-cover rounded-lg shadow-md"
                       />
-                    ))}
-                  </motion.div>
-                </AnimatePresence>
-              </div>
-            </div>
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent rounded-lg opacity-0 group-hover:opacity-100 transition-opacity" />
+
+                      {/* Image number badge */}
+                      <div className="absolute bottom-0 left-0 right-0 bg-black/60 text-white text-xs font-medium px-2 py-1 rounded-b-lg flex justify-between items-center">
+                        <span>{index + 1}</span>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleRemoveImage(image.id, e);
+                          }}
+                          className="text-white opacity-0 group-hover:opacity-100 hover:text-red-400 transition-opacity"
+                        >
+                          <MinusCircle className="w-4 h-4" />
+                        </button>
+                      </div>
+
+                      {/* Maximize icon overlay */}
+                      <div className="absolute top-0 left-0 right-0 bottom-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                        <div className="bg-white/30 backdrop-blur-sm p-2 rounded-full">
+                          <Maximize2 className="w-5 h-5 text-white drop-shadow-lg" />
+                        </div>
+                      </div>
+                    </div>
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+              {selectedImages.length > 1 && (
+                <>
+                  <CarouselPrevious className="-left-4 size-8" />
+                  <CarouselNext className="-right-4 size-8" />
+                </>
+              )}
+            </Carousel>
           </div>
-          {/* Pagination indicator */}
-          {selectedImages.length > visibleCount && (
-            <div className="flex justify-center mt-3">
-              {Array.from({
-                length: Math.ceil(selectedImages.length / visibleCount),
-              }).map((_, i) => (
-                <button
-                  key={i}
-                  onClick={() => setStartIndex(i * visibleCount)}
-                  className={`w-2 h-2 mx-1 rounded-full ${
-                    Math.floor(startIndex / visibleCount) === i
-                      ? "bg-blue-600"
-                      : "bg-gray-300"
-                  }`}
-                  aria-label={`Go to slide ${i + 1}`}
-                />
-              ))}
-            </div>
-          )}
         </div>
       </motion.div>
 

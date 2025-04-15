@@ -15,9 +15,10 @@ export default function SelectImagesPage({
 }: {
   params: Promise<{ params: string[] }>;
 }) {
-  const { params } = use(paramsPromise);
+ const { params } = use(paramsPromise); // this resolves the promise
 
-  const [kind, templateId] = params;
+
+ const [kind, templateId] = params;
 
   // State for template
   const [template, setTemplate] = useState<Template | undefined>(undefined);

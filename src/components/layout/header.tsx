@@ -11,6 +11,9 @@ import Image from "next/image"
 export default function Header() {
   const [scrolled, setScrolled] = useState(false)
   const pathname = usePathname()
+  const albumId = pathname.includes('/select-images/') 
+  ? pathname.split('/select-images/')[1].split('/')[1] 
+  : null;
 
   useEffect(() => {
     const handleScroll = () => {
@@ -63,7 +66,7 @@ export default function Header() {
           <NavLink href="/" active={pathname === "/"}>
             Templates
           </NavLink>
-          <NavLink href="/projects" active={pathname === "/projects"}>
+          <NavLink href={`${albumId}/projects`} active={pathname === `${albumId}/projects`}>
             My Projects
           </NavLink>
           <NavLink href="#" active={false}>

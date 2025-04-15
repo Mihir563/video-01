@@ -164,8 +164,8 @@ export default function ContactFormModal({
       // Close the modal after a delay if successful
       if (response.data.status === "1" || response.data.status === 1) {
         setTimeout(() => {
-          router.push("/projects");
-        }, 5000);
+          router.push(`/${albumId}/projects`);
+        }, 2000);
       }
     } catch (error) {
       console.error("Error submitting form:", error);
@@ -178,23 +178,21 @@ export default function ContactFormModal({
   };
 
   // For debugging - this can be removed in production
-  const fetchAlbumData = async () => {
-    if (uniqueCode) {
-      try {
-        const response = await axios.get(
-          `https://studio.codnix.com/creation/ealbum/${uniqueCode}.json`
-        );
-        console.log("Album data:", response.data);
-      } catch (error) {
-        console.error("Error fetching album data:", error);
-      }
-    }
-  };
+  // const fetchAlbumData = async () => {
+  //   if (albumId) {
+  //     try {
+  //       const response = await axios.get(
+  //         `https://studio.codnix.com/creation/ealbum/${albumId}.json`
+  //       );
+  //       console.log("Album data:", response.data);
+  //     } catch (error) {
+  //       console.error("Error fetching album data:", error);
+  //     }
+  //   }
+  // };
 
   // Optional: Fetch album data when component mounts
-  useEffect(() => {
-    fetchAlbumData();
-  }, [uniqueCode]);
+
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>

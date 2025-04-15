@@ -118,7 +118,7 @@ const MaxImagesModal: React.FC<MaxImagesModalProps> = ({
                     height={20}
                     src={image.url}
                     alt={image.title}
-                    className="w-full h-20 object-fill"
+                    className="w-full h-20 object-cover"
                   />
                   <button
                     onClick={(e) => {
@@ -158,7 +158,7 @@ const MaxImagesModal: React.FC<MaxImagesModalProps> = ({
                   height={24}
                   src={pendingImage.url}
                   alt={pendingImage.title}
-                  className="h-30 w-full object-fill"
+                  className="h-30 w-full object-cover"
                 />
               </div>
             </div>
