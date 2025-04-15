@@ -67,7 +67,7 @@ export default function TemplateModal({
     handleClose();
     // Navigate to image selection page with the selected template
     router.push(
-      `/select-images/${template.id || template.template_id}/${albumId}`
+      `/select-images/${template.id || template.template_id}/?c=${albumId}`
     );
   };
 

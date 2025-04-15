@@ -23,7 +23,7 @@ export default function RootLayout({
       <body
         className={`${inter.className} min-h-screen bg-background text-foreground`}
       >
-        <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
+        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
           <Header />
           <main className="flex-grow">{children}</main>
           <Footer />

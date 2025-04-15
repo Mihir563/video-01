@@ -9,16 +9,18 @@ import { Template } from "@/types";
 import Pagination from "@/components/Pagination";
 import ContactFormModal from "@/components/modal/ContactFormModal";
 import SelectedImagesCarousel from "@/components/images/ImageCarousel/SelectedImagesCarousel";
+import { useSearchParams } from "next/navigation";
 
 export default function SelectImagesPage({
   params: paramsPromise,
 }: {
   params: Promise<{ params: string[] }>;
 }) {
- const { params } = use(paramsPromise); // this resolves the promise
+  const { params } = use(paramsPromise);
+  const searchParams = useSearchParams();
 
-
- const [kind, templateId] = params;
+  const kind = params[0]; // from [kind] in the route
+  const templateId = searchParams.get("c"); // from query string
 
   // State for template
   const [template, setTemplate] = useState<Template | undefined>(undefined);
@@ -77,23 +79,40 @@ export default function SelectImagesPage({
   // Fetch images from API
   useEffect(() => {
     const fetchImages = async () => {
+      // Only fetch images if albumId is available
+      if (!albumId) {
+        setLoading(false);
+        return;
+      }
+      
       setLoading(true);
       try {
+        // Add a small delay to ensure the component is fully mounted
+        await new Promise(resolve => setTimeout(resolve, 100));
+        
         const response = await fetch(
           `https://studio.codnix.com/creation/ealbum/${albumId}.json`
         );
+        
         if (!response.ok) {
           console.error(
             `[ImageLoader] API responded with status: ${response.status}`
           );
-          throw new Error("Failed to fetch images");
+          setImages([]);
+          return;
         }
 
         const data = await response.json();
 
-        const uid = data.Id
+        // Check if data and ImagesServer exist
+        if (!data || !data.ImagesServer) {
+          console.error("[ImageLoader] Invalid data format");
+          setImages([]);
+          return;
+        }
 
-        setUniqueCode(uid)
+        const uid = data.Id;
+        setUniqueCode(uid);
 
         // Transform API data to our UserImage format
         const apiImages: UserImage[] = Object.entries(data.ImagesServer).map(
@@ -108,6 +127,7 @@ export default function SelectImagesPage({
         setImages(apiImages);
       } catch (error) {
         console.error("[ImageLoader] Error fetching images:", error);
+        setImages([]);
       } finally {
         setLoading(false);
       }

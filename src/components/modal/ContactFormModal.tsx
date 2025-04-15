@@ -128,8 +128,6 @@ export default function ContactFormModal({
       // THIS is the key:
       formData.append("selected_images", JSON.stringify(imageUrls));
 
-      console.log("Sending API request with payload:", formData);
-
       // Send data to API using axios
       const response = await axios.post(
         "https://studio.codnix.com/creation/services/saveTemplateOrder",
@@ -164,7 +162,7 @@ export default function ContactFormModal({
       // Close the modal after a delay if successful
       if (response.data.status === "1" || response.data.status === 1) {
         setTimeout(() => {
-          router.push(`/${albumId}/projects`);
+          router.push(`/myvideos?c=${albumId}`);
         }, 2000);
       }
     } catch (error) {

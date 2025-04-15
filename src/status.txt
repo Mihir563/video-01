@@ -1,0 +1,4 @@
+n = pending
+y = complete
+p = processing
+e = error

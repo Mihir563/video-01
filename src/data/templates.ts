@@ -10,9 +10,9 @@ const mapApiTemplateToUI = (template: Template): Template => {
     ...template,
     id: template.template_id,
     title: template.name,
-    description: `Beautiful ${template.name} template with ${template.required_images} required images`,
+    description: `${template.name} template with ${template.required_images} required images`,
     url: "/assets/video.mp4", // Default video URL
-    thumbnail: template.thumb_url || `/thumbnails/${template.folder_prefix.toLowerCase()}.jpg`,
+    thumbnail: template.thumb_url || `/placeholder.png`,
     bestFor: "creating stunning videos",
     tags: ["Professional", "Modern", "Creative"],
     effect: template.folder_prefix.split('_')[1]?.toLowerCase() || "fade"
